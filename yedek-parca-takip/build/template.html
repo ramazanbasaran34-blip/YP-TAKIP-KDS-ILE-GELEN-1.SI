@@ -164,7 +164,6 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
   <div id="viewReport">
   <section class="kpis" id="kpis"></section>
 
-  <section class="grid3" id="summaries"></section>
 
   <section class="panel">
     <div class="bar noprint">
@@ -245,32 +244,6 @@ function kpis(){
     ['Hepsi eksik olan cari', nf.format([...eksikCari].filter(c=>eksik.filter(r=>r.cariKod===c).length===STOK.length).length), `${STOK.length} stok kodunun hepsinde 0`,'bad']
   ];
   $('kpis').innerHTML = k.map(x=>`<div class="kpi ${x[3]}"><div class="l">${esc(x[0])}</div><div class="v">${x[1]}</div><div class="n">${esc(x[2])}</div></div>`).join('');
-}
-
-/* ---- Summaries (bars; click = filter) ---- */
-function bars(items,max,attr){
-  return items.map(i=>`<div class="brow" ${attr}="${esc(i.key)}" title="Tabloda göster"><div class="nm">${i.label}</div><div class="track"><div class="fill" style="width:${max?Math.max(2,i.v/max*100):0}%"></div></div><div class="ct">${i.txt}</div></div>`).join('');
-}
-function summaries(){
-  const byStok = STOK.map((s,i)=>({key:s.kod,v:eksik.filter(r=>r.si===i).length,label:`${esc(s.kod)} <small>${esc(s.ad.length>26?s.ad.slice(0,26)+'…':s.ad)}</small>`}));
-  byStok.forEach(i=>i.txt=`${i.v} / ${allCari.size}`);
-  byStok.sort((a,b)=>b.v-a.v);
-
-  const cityMap = {};
-  eksik.forEach(r=>{(cityMap[r.sehir] ||= {rows:0,cari:new Set()}); cityMap[r.sehir].rows++; cityMap[r.sehir].cari.add(r.cariKod);});
-  const byCity = Object.entries(cityMap).map(([k,o])=>({key:k,v:o.rows,label:esc(k),txt:`${o.rows} satır · ${o.cari.size} cari`})).sort((a,b)=>b.v-a.v).slice(0,10);
-
-  const cMap = {};
-  eksik.forEach(r=>{(cMap[r.cariKod] ||= {n:0,ad:r.cari,sehir:r.sehir}); cMap[r.cariKod].n++;});
-  const byCari = Object.entries(cMap).map(([k,o])=>({key:k,v:o.n,label:`${esc(o.ad)} <small>${esc(o.sehir)}</small>`,txt:`${o.n} / ${STOK.length}`})).sort((a,b)=>b.v-a.v||tr.compare(a.label,b.label)).slice(0,10);
-
-  $('summaries').innerHTML =
-   `<div class="card"><h2>Stok koduna göre eksik</h2><div class="hint">Kaç carinin adedi ve bekleyeni 0</div>${bars(byStok,allCari.size,'data-stok')}</div>`+
-   `<div class="card"><h2>Şehre göre eksik (ilk 10)</h2><div class="hint">Eksik satır sayısı ve etkilenen cari</div>${bars(byCity,byCity[0]?.v||1,'data-sehir')}</div>`+
-   `<div class="card"><h2>En çok eksiği olan cariler (ilk 10)</h2><div class="hint">${STOK.length} stok kodundan kaçı eksik</div>${bars(byCari,STOK.length,'data-cari')}</div>`;
-  $('summaries').querySelectorAll('[data-stok]').forEach(e=>e.onclick=()=>{st.stok=e.dataset.stok;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
-  $('summaries').querySelectorAll('[data-sehir]').forEach(e=>e.onclick=()=>{st.sehir=e.dataset.sehir;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
-  $('summaries').querySelectorAll('[data-cari]').forEach(e=>e.onclick=()=>{st.q=e.dataset.cari;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
 }
 
 /* ---- Filters / table ---- */
@@ -370,7 +343,7 @@ table{border-collapse:collapse;width:100%;margin-bottom:24px}th,td{border-bottom
   download(new Blob([html],{type:'text/html;charset=utf-8'}),`yedek_parca_eksik_${stamp()}.html`);
 }
 
-kpis(); summaries(); buildControls(); sync();
+kpis(); buildControls(); sync();
 
 /* ---- Eksik Alım Yapan Servisler (A4 dikey yazı) ---- */
 const LOGO_K='__LOGO_KURALKAN__', LOGO_B='__LOGO_BAJAJ__';
