@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yedek Parça Eksik Stok Raporu</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#1b2430; --muted:#5d6b7c; --line:#e1e5ea;
+  --accent:#1f5fbf; --accent-soft:#e6efff;
+  --bad:#c0392b; --bad-soft:#fdecea; --warn:#a86a00; --warn-soft:#fff3d9; --ok:#1e7e4f; --ok-soft:#e3f5ea;
+  --bar:#c0392b; --bar-bg:#eef0f3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161c; --card:#1a2029; --ink:#e8ecf1; --muted:#9aa7b8; --line:#2b3340;
+    --accent:#6aa3ff; --accent-soft:#1d2a40;
+    --bad:#ff7b6b; --bad-soft:#3a1f1c; --warn:#f0b24a; --warn-soft:#3a2d14; --ok:#5fd39a; --ok-soft:#173026;
+    --bar:#ff7b6b; --bar-bg:#262d38;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
+header.top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{color:var(--muted);font-size:12px}
+.kpi .v{font-size:26px;font-weight:650;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi .n{color:var(--muted);font-size:12px;margin-top:2px}
+.kpi.bad .v{color:var(--bad)} .kpi.warn .v{color:var(--warn)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card h2{font-size:14px;margin:0 0 2px}
+.card .hint{color:var(--muted);font-size:12px;margin-bottom:10px}
+.brow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(60px,1fr) auto;gap:8px;align-items:center;padding:4px 6px;margin:0 -6px;border-radius:6px;cursor:pointer}
+.brow:hover{background:var(--accent-soft)}
+.brow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.brow .nm small{color:var(--muted)}
+.track{height:8px;background:var(--bar-bg);border-radius:4px;overflow:hidden}
+.fill{height:100%;background:var(--bar);border-radius:4px}
+.brow .ct{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--muted);min-width:56px;text-align:right}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink);padding:7px 11px;font:inherit;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+select,input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-width:0}
+input[type=search]{flex:1 1 200px}
+.spacer{flex:1 1 auto}
+.btn{font:inherit;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:8px 13px;cursor:pointer;font-weight:600}
+.btn.ghost{background:transparent;color:var(--accent)}
+.menu{position:relative}
+.menu-list{position:absolute;right:0;top:calc(100% + 6px);min-width:250px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;z-index:20;display:none}
+.menu.open .menu-list{display:block}
+.menu-list button{display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:var(--ink);font:inherit;padding:9px 10px;border-radius:7px;cursor:pointer}
+.menu-list button:hover{background:var(--accent-soft)}
+.menu-list .ic{width:34px;text-align:center;font-size:11px;font-weight:700;border-radius:5px;padding:3px 0;background:var(--accent-soft);color:var(--accent)}
+.menu-list small{display:block;color:var(--muted);font-size:11.5px}
+.tablewrap{overflow:auto;max-height:70vh}
+table{border-collapse:collapse;width:100%}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{position:sticky;top:0;background:var(--card);font-size:12px;color:var(--muted);cursor:pointer;user-select:none;z-index:1}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+th[aria-sort="ascending"]::after{content:" ▲";font-size:9px} th[aria-sort="descending"]::after{content:" ▼";font-size:9px}
+tbody tr:hover{background:var(--accent-soft)}
+td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600}
+.chip.bad{background:var(--bad-soft);color:var(--bad)} .chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.ok{background:var(--ok-soft);color:var(--ok)}
+.foot{padding:10px 14px;color:var(--muted);font-size:12px}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.printonly{display:none}
+
+.tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;border:0;background:transparent;color:var(--muted);padding:9px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:600}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.lt{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:14px;align-items:start}
+.lt-list{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;position:sticky;top:8px}
+.lt-tools{padding:10px 12px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+.lt-tools .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lt-items{max-height:68vh;overflow:auto}
+.lt-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.lt-item:hover{background:var(--accent-soft)}
+.lt-item.active{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.lt-item .t{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lt-item .s{color:var(--muted);font-size:12px}
+.lt-item .c{font-variant-numeric:tabular-nums;font-size:12px;color:var(--bad);font-weight:700}
+.lt-prev{overflow:auto;padding:4px}
+.lt-prev .note{color:var(--muted);font-size:12px;margin:0 0 8px}
+.sheet{background:#fff;color:#000;width:210mm;min-height:297mm;padding:12mm;margin:0 auto;box-shadow:0 2px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;font-size:13px;line-height:1.4}
+.sheet .hd{display:flex;justify-content:space-between;align-items:center;gap:6mm;padding-bottom:4mm;border-bottom:2px solid #1f5fbf}
+.sheet .hd .ttl{flex:1 1 auto;text-align:center;font-size:19px;font-weight:800;line-height:1.2;color:#0b2a5b;letter-spacing:.01em}
+.sheet .hd img{height:9mm;flex:none;width:auto;display:block}
+.sheet h2{font-size:21px;font-weight:800;margin:5mm 0 3mm;text-align:center;letter-spacing:.01em}
+.sheet .info{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;border:1.5px solid #444;padding:3mm 5mm;margin-bottom:4mm;font-size:15px;font-weight:600}
+.sheet .info b{font-weight:800}
+.sheet .info .ilce{min-width:40mm;display:inline-block;border-bottom:1px dotted #888;outline:none}
+.sheet .info .ilce:empty::before{content:"İlçe yazın";color:#aaa}
+.sheet table{width:100%;border-collapse:collapse}
+.sheet th,.sheet td{border:1px solid #444;padding:3px 6px;color:#000;background:#fff;text-align:left;position:static;cursor:default;font-size:13.5px;font-weight:600;white-space:normal}
+.sheet th{background:#dfe5ee;font-size:13px;font-weight:800}
+.sheet th.n,.sheet td.n{text-align:center;width:12mm}
+.sheet tbody tr:hover{background:#fff}
+.sheet td.kod{white-space:nowrap;width:31mm}.sheet td.ad{width:30mm}.sheet td.mdl{font-size:11.5px;line-height:1.3;color:#000;font-weight:600}
+.sheet .msg{margin-top:5mm;border:3px solid #b3261e;border-radius:2mm;background:#fdeceb;color:#000;padding:5mm 6mm;font-size:17px;font-weight:800;line-height:1.35;text-align:center;break-inside:avoid;page-break-inside:avoid}
+#printLetters{display:none}
+#capture{position:fixed;left:-10000px;top:0}#capture .sheet{box-shadow:none;margin:0}
+@media (max-width:860px){ .lt{grid-template-columns:1fr} .lt-list{position:static} .lt-items{max-height:40vh} }
+
+@media (max-width:640px){ .grid3{grid-template-columns:1fr} .tablewrap{max-height:none} }
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  body{background:#fff;color:#000;font-size:10.5px}
+  .noprint,.bar,.menu{display:none!important}
+  .printonly{display:block}
+  .wrap{max-width:none;padding:0}
+  .kpi,.card,.panel{border-color:#bbb;break-inside:avoid}
+  .grid3{grid-template-columns:repeat(3,1fr)}
+  .tablewrap{overflow:visible;max-height:none}
+  th{position:static;color:#000;background:#eee}
+  th,td{padding:3px 6px}
+  tr{break-inside:avoid}
+  .chip{border:1px solid #888;background:none!important;color:#000!important}
+
+  body.print-letters .wrap{display:none!important}
+  body.print-letters #printLetters{display:block}
+  body.print-letters{background:#fff}
+  #printLetters .sheet{box-shadow:none;width:auto;min-height:0;height:auto;padding:0;margin:0;break-after:page;page-break-after:always}
+  #printLetters .sheet:last-child{break-after:auto;page-break-after:auto}
+  #printLetters .sheet th,#printLetters .sheet td{padding:3px 6px;font-size:13px}
+  #printLetters .sheet td.mdl{font-size:11px}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Yedek Parça Eksik Stok Raporu</h1>
+      <div class="sub">Kaynak: Servis Performans Eşleşenler – Yedek Parça Adet · Rapor tarihi: <span id="rtarih"></span></div>
+      <div class="sub printonly" id="printFilter"></div>
+    </div>
+    <div class="menu noprint" id="saveMenu">
+      <button class="btn" id="saveBtn" aria-haspopup="true" aria-expanded="false">Farklı Kaydet ▾</button>
+      <div class="menu-list" role="menu">
+        <button role="menuitem" data-fmt="xlsx"><span class="ic">XLSX</span><span>Excel olarak indir<small id="cntX"></small></span></button>
+        <button role="menuitem" data-fmt="pdf"><span class="ic">PDF</span><span>PDF olarak kaydet<small id="cntP">Açılan pencerede “PDF olarak kaydet”i seçin</small></span></button>
+        <button role="menuitem" data-fmt="jpg" hidden><span class="ic">JPG</span><span>JPG olarak kaydet<small id="cntJ"></small></span></button>
+        <button role="menuitem" data-fmt="html"><span class="ic">HTML</span><span>HTML olarak indir<small>Tek dosya, internetsiz açılır</small></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs noprint" role="tablist">
+    <button role="tab" id="tabRep" aria-selected="true">Genel Rapor</button>
+    <button role="tab" id="tabLt" aria-selected="false">Eksik Alım Yapan Servisler</button>
+  </nav>
+
+  <div id="viewReport">
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid3" id="summaries"></section>
+
+  <section class="panel">
+    <div class="bar noprint">
+      <div class="seg" id="viewSeg" role="group" aria-label="Görünüm"></div>
+      <select id="fStok" aria-label="Stok kodu"></select>
+      <select id="fSehir" aria-label="Şehir"></select>
+      <input type="search" id="fQ" placeholder="Cari adı, cari kodu veya stok ara…" aria-label="Ara">
+      <button class="btn ghost" id="reset">Temizle</button>
+    </div>
+    <div class="tablewrap">
+      <table id="tbl">
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="empty" hidden>Bu filtreyle eşleşen satır yok.</div>
+    </div>
+    <div class="foot" id="foot"></div>
+  </section>
+  </div>
+
+  <div id="viewLetters" hidden>
+    <div class="lt">
+      <aside class="lt-list">
+        <div class="lt-tools">
+          <input type="search" id="ltQ" placeholder="Bayi adı, cari kodu veya il ara…" aria-label="Servis ara">
+          <div class="row">
+            <button class="btn ghost" id="ltAll">Tümünü seç</button>
+            <button class="btn ghost" id="ltNone">Seçimi kaldır</button>
+          </div>
+          <button class="btn" id="ltPrint">Seçilenleri yazdır</button>
+          <div class="sub" id="ltInfo"></div>
+        </div>
+        <div class="lt-items" id="ltItems"></div>
+      </aside>
+      <div class="lt-prev">
+        <p class="note noprint">Önizleme A4 dikey. Seçili servisleri sağ üstteki <b>Farklı Kaydet</b> menüsünden PDF veya JPG olarak kaydedebilirsiniz.</p>
+        <div id="ltSheet"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="printLetters" aria-hidden="true"></div>
+<div id="capture" aria-hidden="true"></div>
+
+<script>__XLSX__</script>
+<script>__H2C__</script>
+<script>__JSZIP__</script>
+<script>
+const DATA = __DATA__;
+</script>
+<script>
+(function(){
+const STOK = DATA.stoklar;               // [{kod,ad,model}]
+const ROWS = DATA.rows.map(r=>({cariKod:r[0],cari:r[1],sehir:r[2],si:r[3],adet:r[4],bek:r[5]}));
+ROWS.forEach(r=>{ r.stokKod=STOK[r.si].kod; r.stokAd=STOK[r.si].ad; r.durum = r.adet===0 ? (r.bek===0?'Eksik':'Bekliyor') : 'Var'; });
+const nf = new Intl.NumberFormat('tr-TR');
+const tr = new Intl.Collator('tr',{numeric:true,sensitivity:'base'});
+const $ = id=>document.getElementById(id);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today = new Date().toLocaleDateString('tr-TR');
+$('rtarih').textContent = today;
+
+const isEksik = r=>r.adet===0 && r.bek===0;
+const isBek   = r=>r.adet===0 && r.bek>0;
+const VIEWS = {
+  eksik:{label:'Eksik (Adet 0 ve Bekleyen 0)', f:isEksik},
+  bek:{label:'Adet 0, Bekleyeni var', f:isBek},
+  tumu:{label:'Tümü', f:()=>true}
+};
+const st = {view:'eksik', stok:'', sehir:'', q:'', sort:{key:'cari',dir:1}};
+
+const allCari = new Set(ROWS.map(r=>r.cariKod));
+const eksik = ROWS.filter(isEksik);
+const eksikCari = new Set(eksik.map(r=>r.cariKod));
+const bekRows = ROWS.filter(isBek);
+
+/* ---- KPI ---- */
+function kpis(){
+  const k=[
+    ['Toplam kontrol edilen satır', nf.format(ROWS.length), `${nf.format(allCari.size)} cari × ${STOK.length} stok kodu`,''],
+    ['Eksik satır', nf.format(eksik.length), `Adet 0 ve Bekleyen 0 · %${(eksik.length/ROWS.length*100).toFixed(1).replace('.',',')}`,'bad'],
+    ['Eksiği olan cari', nf.format(eksikCari.size), `${nf.format(allCari.size)} carinin %${(eksikCari.size/allCari.size*100).toFixed(0)}’i`,'bad'],
+    ['Adet 0, bekleyeni var', nf.format(bekRows.length), `${new Set(bekRows.map(r=>r.cariKod)).size} cari · sipariş yolda`,'warn'],
+    ['Hepsi eksik olan cari', nf.format([...eksikCari].filter(c=>eksik.filter(r=>r.cariKod===c).length===STOK.length).length), `${STOK.length} stok kodunun hepsinde 0`,'bad']
+  ];
+  $('kpis').innerHTML = k.map(x=>`<div class="kpi ${x[3]}"><div class="l">${esc(x[0])}</div><div class="v">${x[1]}</div><div class="n">${esc(x[2])}</div></div>`).join('');
+}
+
+/* ---- Summaries (bars; click = filter) ---- */
+function bars(items,max,attr){
+  return items.map(i=>`<div class="brow" ${attr}="${esc(i.key)}" title="Tabloda göster"><div class="nm">${i.label}</div><div class="track"><div class="fill" style="width:${max?Math.max(2,i.v/max*100):0}%"></div></div><div class="ct">${i.txt}</div></div>`).join('');
+}
+function summaries(){
+  const byStok = STOK.map((s,i)=>({key:s.kod,v:eksik.filter(r=>r.si===i).length,label:`${esc(s.kod)} <small>${esc(s.ad.length>26?s.ad.slice(0,26)+'…':s.ad)}</small>`}));
+  byStok.forEach(i=>i.txt=`${i.v} / ${allCari.size}`);
+  byStok.sort((a,b)=>b.v-a.v);
+
+  const cityMap = {};
+  eksik.forEach(r=>{(cityMap[r.sehir] ||= {rows:0,cari:new Set()}); cityMap[r.sehir].rows++; cityMap[r.sehir].cari.add(r.cariKod);});
+  const byCity = Object.entries(cityMap).map(([k,o])=>({key:k,v:o.rows,label:esc(k),txt:`${o.rows} satır · ${o.cari.size} cari`})).sort((a,b)=>b.v-a.v).slice(0,10);
+
+  const cMap = {};
+  eksik.forEach(r=>{(cMap[r.cariKod] ||= {n:0,ad:r.cari,sehir:r.sehir}); cMap[r.cariKod].n++;});
+  const byCari = Object.entries(cMap).map(([k,o])=>({key:k,v:o.n,label:`${esc(o.ad)} <small>${esc(o.sehir)}</small>`,txt:`${o.n} / ${STOK.length}`})).sort((a,b)=>b.v-a.v||tr.compare(a.label,b.label)).slice(0,10);
+
+  $('summaries').innerHTML =
+   `<div class="card"><h2>Stok koduna göre eksik</h2><div class="hint">Kaç carinin adedi ve bekleyeni 0</div>${bars(byStok,allCari.size,'data-stok')}</div>`+
+   `<div class="card"><h2>Şehre göre eksik (ilk 10)</h2><div class="hint">Eksik satır sayısı ve etkilenen cari</div>${bars(byCity,byCity[0]?.v||1,'data-sehir')}</div>`+
+   `<div class="card"><h2>En çok eksiği olan cariler (ilk 10)</h2><div class="hint">${STOK.length} stok kodundan kaçı eksik</div>${bars(byCari,STOK.length,'data-cari')}</div>`;
+  $('summaries').querySelectorAll('[data-stok]').forEach(e=>e.onclick=()=>{st.stok=e.dataset.stok;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
+  $('summaries').querySelectorAll('[data-sehir]').forEach(e=>e.onclick=()=>{st.sehir=e.dataset.sehir;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
+  $('summaries').querySelectorAll('[data-cari]').forEach(e=>e.onclick=()=>{st.q=e.dataset.cari;sync();$('tbl').scrollIntoView({behavior:'smooth',block:'start'});});
+}
+
+/* ---- Filters / table ---- */
+const COLS=[
+  ['cariKod','Cari Kodu','mono'],['cari','Cari İsim',''],['sehir','Şehir',''],
+  ['stokKod','Stok Kodu','mono'],['stokAd','Stok Adı',''],
+  ['adet','Adet','num'],['bek','Bekleyen','num'],['durum','Durum','']
+];
+function buildControls(){
+  $('viewSeg').innerHTML = Object.entries(VIEWS).map(([k,v])=>`<button data-v="${k}" aria-pressed="${k===st.view}">${esc(v.label)}</button>`).join('');
+  $('viewSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{st.view=b.dataset.v;sync();});
+  $('fStok').innerHTML = `<option value="">Tüm stok kodları</option>`+STOK.map(s=>`<option value="${esc(s.kod)}">${esc(s.kod)} – ${esc(s.ad.slice(0,30))}</option>`).join('');
+  const cities=[...new Set(ROWS.map(r=>r.sehir))].sort(tr.compare);
+  $('fSehir').innerHTML = `<option value="">Tüm şehirler</option>`+cities.map(c=>`<option>${esc(c)}</option>`).join('');
+  $('fStok').onchange=e=>{st.stok=e.target.value;sync();};
+  $('fSehir').onchange=e=>{st.sehir=e.target.value;sync();};
+  $('fQ').oninput=e=>{st.q=e.target.value;render();};
+  $('reset').onclick=()=>{st.stok='';st.sehir='';st.q='';sync();};
+  $('thead').innerHTML = COLS.map(c=>`<th data-k="${c[0]}" class="${c[2]==='num'?'num':''}" aria-sort="none" tabindex="0">${c[1]}</th>`).join('');
+  $('thead').querySelectorAll('th').forEach(th=>{
+    const go=()=>{const k=th.dataset.k; st.sort = st.sort.key===k?{key:k,dir:-st.sort.dir}:{key:k,dir:1}; render();};
+    th.onclick=go; th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+}
+function filtered(){
+  const q=st.q.trim().toLocaleLowerCase('tr');
+  let out=ROWS.filter(VIEWS[st.view].f).filter(r=>(!st.stok||r.stokKod===st.stok)&&(!st.sehir||r.sehir===st.sehir)&&(!q||(r.cari+' '+r.cariKod+' '+r.stokKod+' '+r.stokAd).toLocaleLowerCase('tr').includes(q)));
+  const {key,dir}=st.sort;
+  out.sort((a,b)=>{
+    const x=a[key],y=b[key];
+    const c = typeof x==='number'? x-y : tr.compare(String(x),String(y));
+    return (c||tr.compare(a.cariKod,b.cariKod)||tr.compare(a.stokKod,b.stokKod))*dir;
+  });
+  return out;
+}
+function chip(d){return `<span class="chip ${d==='Eksik'?'bad':d==='Bekliyor'?'warn':'ok'}">${d}</span>`;}
+function render(){
+  const rows=filtered();
+  $('tbody').innerHTML = rows.map(r=>`<tr><td class="mono">${esc(r.cariKod)}</td><td>${esc(r.cari)}</td><td>${esc(r.sehir)}</td><td class="mono">${esc(r.stokKod)}</td><td title="${esc(STOK[r.si].model)}">${esc(r.stokAd)}</td><td class="num">${nf.format(r.adet)}</td><td class="num">${nf.format(r.bek)}</td><td>${chip(r.durum)}</td></tr>`).join('');
+  $('empty').hidden = rows.length>0;
+  $('thead').querySelectorAll('th').forEach(th=>th.setAttribute('aria-sort', th.dataset.k===st.sort.key?(st.sort.dir>0?'ascending':'descending'):'none'));
+  const cari=new Set(rows.map(r=>r.cariKod)).size;
+  $('foot').textContent = `${nf.format(rows.length)} satır · ${nf.format(cari)} cari gösteriliyor. Stok adının üzerine gelince uyumlu model listesi görünür.`;
+  $('cntX').textContent = `${nf.format(rows.length)} satır (tablodaki görünüm)`;
+  const f=[VIEWS[st.view].label, st.stok&&('Stok: '+st.stok), st.sehir&&('Şehir: '+st.sehir), st.q&&('Arama: '+st.q)].filter(Boolean);
+  $('printFilter').textContent = 'Görünüm: '+f.join(' · ')+' · '+nf.format(rows.length)+' satır';
+}
+function sync(){
+  document.querySelectorAll('#viewSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.view));
+  $('fStok').value=st.stok; $('fSehir').value=st.sehir; $('fQ').value=st.q; render();
+}
+
+/* ---- Farklı Kaydet ---- */
+const menu=$('saveMenu'); let inLt=false;
+$('saveBtn').onclick=e=>{e.stopPropagation(); const o=menu.classList.toggle('open'); $('saveBtn').setAttribute('aria-expanded',o);};
+document.addEventListener('click',()=>{menu.classList.remove('open');$('saveBtn').setAttribute('aria-expanded',false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')menu.classList.remove('open');});
+menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); const f=b.dataset.fmt; if(inLt){ if(f==='pdf')ltPrintNow(); else if(f==='jpg')ltJpg(); } else ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml})[f]();});
+
+const stamp=()=>new Date().toISOString().slice(0,10);
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+function filterText(rows){return [VIEWS[st.view].label, st.stok&&('Stok: '+st.stok), st.sehir&&('Şehir: '+st.sehir), st.q&&('Arama: '+st.q)].filter(Boolean).join(' · ');}
+function stokSummary(rows){return STOK.map((s,i)=>[s.kod,s.ad,rows.filter(r=>r.si===i).length]).filter(x=>x[2]>0);}
+function cariSummary(rows){const m={};rows.forEach(r=>{(m[r.cariKod] ||= [r.cariKod,r.cari,r.sehir,0]); m[r.cariKod][3]++;});return Object.values(m).sort((a,b)=>b[3]-a[3]||tr.compare(a[1],b[1]));}
+
+function saveXlsx(){
+  const rows=filtered();
+  const head=['Cari Kodu','Cari İsim','Şehir','Stok Kodu','Stok Adı','Adet','Bekleyen','Durum','Model Listesi'];
+  const ws=XLSX.utils.aoa_to_sheet([head,...rows.map(r=>[r.cariKod,r.cari,r.sehir,r.stokKod,r.stokAd,r.adet,r.bek,r.durum,STOK[r.si].model])]);
+  ws['!cols']=[{wch:11},{wch:34},{wch:13},{wch:18},{wch:40},{wch:8},{wch:10},{wch:10},{wch:60}];
+  ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(rows.length,1),c:head.length-1}})};
+  ws['!freeze']={xSplit:0,ySplit:1};
+  const ws2=XLSX.utils.aoa_to_sheet([['Stok Kodu','Stok Adı','Satır Sayısı'],...stokSummary(rows)]); ws2['!cols']=[{wch:18},{wch:44},{wch:13}];
+  const ws3=XLSX.utils.aoa_to_sheet([['Cari Kodu','Cari İsim','Şehir','Satır Sayısı'],...cariSummary(rows)]); ws3['!cols']=[{wch:11},{wch:34},{wch:13},{wch:13}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Liste'); XLSX.utils.book_append_sheet(wb,ws2,'Stok Özeti'); XLSX.utils.book_append_sheet(wb,ws3,'Cari Özeti');
+  XLSX.writeFile(wb,`yedek_parca_eksik_${stamp()}.xlsx`);
+}
+function savePdf(){
+  const old=document.title; document.title=`yedek_parca_eksik_${stamp()}`;
+  const done=()=>{document.title=old;window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done); window.print();
+}
+function saveHtml(){
+  const rows=filtered(), cari=new Set(rows.map(r=>r.cariKod)).size;
+  const tr_=rows.map(r=>`<tr><td>${esc(r.cariKod)}</td><td>${esc(r.cari)}</td><td>${esc(r.sehir)}</td><td>${esc(r.stokKod)}</td><td>${esc(r.stokAd)}</td><td class="n">${nf.format(r.adet)}</td><td class="n">${nf.format(r.bek)}</td><td>${esc(r.durum)}</td></tr>`).join('');
+  const ss=stokSummary(rows).map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td><td class="n">${x[2]}</td></tr>`).join('');
+  const html=`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Yedek Parça Eksik Stok Raporu</title><style>
+body{font:14px/1.45 system-ui,Segoe UI,Roboto,sans-serif;margin:24px;color:#1b2430}h1{font-size:20px;margin:0 0 4px}.s{color:#5d6b7c;font-size:13px;margin-bottom:16px}
+table{border-collapse:collapse;width:100%;margin-bottom:24px}th,td{border-bottom:1px solid #e1e5ea;padding:6px 9px;text-align:left}th{background:#f1f3f6;font-size:12px}.n{text-align:right}
+.k{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}.k div{border:1px solid #e1e5ea;border-radius:8px;padding:10px 14px}.k b{display:block;font-size:22px}
+@media print{@page{size:A4 landscape;margin:10mm}body{margin:0;font-size:10.5px}tr{break-inside:avoid}}</style></head><body>
+<h1>Yedek Parça Eksik Stok Raporu</h1><div class="s">Rapor tarihi: ${today} · ${esc(filterText(rows))}</div>
+<div class="k"><div><b>${nf.format(rows.length)}</b>Satır</div><div><b>${nf.format(cari)}</b>Cari</div></div>
+<h2 style="font-size:15px">Stok koduna göre özet</h2><table><thead><tr><th>Stok Kodu</th><th>Stok Adı</th><th class="n">Satır</th></tr></thead><tbody>${ss}</tbody></table>
+<h2 style="font-size:15px">Liste</h2><table><thead><tr><th>Cari Kodu</th><th>Cari İsim</th><th>Şehir</th><th>Stok Kodu</th><th>Stok Adı</th><th class="n">Adet</th><th class="n">Bekleyen</th><th>Durum</th></tr></thead><tbody>${tr_}</tbody></table></body></html>`;
+  download(new Blob([html],{type:'text/html;charset=utf-8'}),`yedek_parca_eksik_${stamp()}.html`);
+}
+
+kpis(); summaries(); buildControls(); sync();
+
+/* ---- Eksik Alım Yapan Servisler (A4 dikey yazı) ---- */
+const LOGO_K='__LOGO_KURALKAN__', LOGO_B='__LOGO_BAJAJ__';
+const svc = {};
+eksik.forEach(r=>{(svc[r.cariKod] ||= {kod:r.cariKod,ad:r.cari,il:r.sehir,parts:[]}).parts.push({kod:r.stokKod,ad:r.stokAd,model:STOK[r.si].model.split(',').map(x=>x.trim()).filter(Boolean).join(', ')});});
+const SVC = Object.values(svc).sort((a,b)=>tr.compare(a.il,b.il)||tr.compare(a.ad,b.ad));
+SVC.forEach(s=>s.parts.sort((a,b)=>tr.compare(a.kod,b.kod)));
+const sel = new Set(SVC.map(s=>s.kod)); let active = SVC[0]?.kod; let ltq='';
+function sheetHtml(s, editable){
+  return `<div class="sheet" data-k="${esc(s.kod)}">
+    <div class="hd"><img src="${LOGO_K}" alt="e-Kuralkan"><div class="ttl">Servis Yedek Parça Takip Sistemi</div><img src="${LOGO_B}" alt="Bajaj"></div>
+    <h2>Alım Yapılmayan Yedek Parçalar Listesi</h2>
+    <div class="info">
+      <b>Bayi Adı:</b><span>${esc(s.ad)} <span style="color:#666">(${esc(s.kod)})</span></span>
+      <b>İl:</b><span>${esc(s.il)}</span>
+    </div>
+    <table><thead><tr><th class="n">Sıra</th><th>Stok Kodu</th><th>Stok Adı</th><th>Uyumlu Modeller</th></tr></thead><tbody>
+    ${s.parts.map((p,i)=>`<tr><td class="n">${i+1}</td><td class="kod">${esc(p.kod)}</td><td class="ad">${esc(p.ad)}</td><td class="mdl">${esc(p.model)}</td></tr>`).join('')}
+    </tbody></table>
+    <div class="msg">Sayın Servisimiz, yukarıdaki yedek parçalardan alım yapmadığınız tespit edilmiştir.</div>
+  </div>`;
+}
+function ltList(){
+  const q=ltq.trim().toLocaleLowerCase('tr');
+  const items=SVC.filter(s=>!q||(s.ad+' '+s.kod+' '+s.il).toLocaleLowerCase('tr').includes(q));
+  $('ltItems').innerHTML = items.map(s=>`<div class="lt-item ${s.kod===active?'active':''}" data-k="${esc(s.kod)}"><input type="checkbox" ${sel.has(s.kod)?'checked':''} aria-label="Seç"><div><div class="t">${esc(s.ad)}</div><div class="s">${esc(s.il)} · ${esc(s.kod)}</div></div><div class="c">${s.parts.length} parça</div></div>`).join('') || '<div class="empty">Eşleşen servis yok.</div>';
+  $('ltItems').querySelectorAll('.lt-item').forEach(el=>{
+    const k=el.dataset.k, cb=el.querySelector('input');
+    cb.onclick=e=>{e.stopPropagation(); cb.checked?sel.add(k):sel.delete(k); ltInfo();};
+    el.onclick=()=>{active=k; ltList(); ltPreview();};
+  });
+  ltInfo();
+}
+function ltCount(){return sel.size+' sayfa (seçili servisler)'+(sel.size>1?' · JPG\'ler ZIP içinde':'');}
+function ltInfo(){ $('cntJ').textContent=ltCount(); if(inLt)$('cntP').textContent=ltCount(); $('ltInfo').textContent=`${SVC.length} serviste eksik alım var · ${sel.size} seçili (${sel.size} sayfa)`; $('ltPrint').disabled=!sel.size; }
+function ltPreview(){
+  const s=svc[active]; $('ltSheet').innerHTML = s?sheetHtml(s,true):'<div class="empty">Servis seçin.</div>';
+}
+$('ltQ').oninput=e=>{ltq=e.target.value; ltList();};
+$('ltAll').onclick=()=>{SVC.forEach(s=>sel.add(s.kod)); ltList();};
+$('ltNone').onclick=()=>{sel.clear(); ltList();};
+function ltPrintNow(){
+  const list=SVC.filter(s=>sel.has(s.kod)); if(!list.length) return;
+  $('printLetters').innerHTML=list.map(s=>sheetHtml(s,false)).join('');
+  const style=document.createElement('style'); style.textContent='@page{size:A4 portrait;margin:12mm}'; document.head.appendChild(style);
+  document.body.classList.add('print-letters');
+  const old=document.title; document.title='eksik_alim_servis_yazilari_'+stamp();
+  const done=()=>{document.body.classList.remove('print-letters');style.remove();$('printLetters').innerHTML='';document.title=old;window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done); window.print();
+}
+$('ltPrint').onclick=ltPrintNow;
+function fname(s){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'.jpg';}
+async function ltJpg(){
+  const list=SVC.filter(s=>sel.has(s.kod)); if(!list.length) return;
+  const btn=$('ltPrint'), old=btn.textContent; btn.disabled=true;
+  try{
+    const cap=$('capture'); const files=[];
+    for(let i=0;i<list.length;i++){
+      btn.textContent=`JPG hazırlanıyor… ${i+1}/${list.length}`;
+      cap.innerHTML=sheetHtml(list[i],false);
+      const cv=await html2canvas(cap.firstElementChild,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+      const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.92));
+      files.push([fname(list[i]),blob]);
+    }
+    cap.innerHTML='';
+    if(files.length===1) download(files[0][1],files[0][0]);
+    else{ const z=new JSZip(); files.forEach(f=>z.file(f[0],f[1])); download(await z.generateAsync({type:'blob'}),`eksik_alim_servis_yazilari_${stamp()}.zip`); }
+  }catch(e){ alert('JPG oluşturulamadı: '+e.message); }
+  finally{ btn.textContent=old; ltInfo(); }
+}
+function tab(which){
+  const lt = which==='lt';
+  inLt=lt; $('viewReport').hidden=lt; $('viewLetters').hidden=!lt;
+  menu.querySelector('[data-fmt=xlsx]').hidden=lt; menu.querySelector('[data-fmt=html]').hidden=lt; menu.querySelector('[data-fmt=jpg]').hidden=!lt;
+  $('cntP').textContent = lt? ltCount() : 'Açılan pencerede “PDF olarak kaydet”i seçin'; $('cntJ').textContent=ltCount();
+  $('tabRep').setAttribute('aria-selected',!lt); $('tabLt').setAttribute('aria-selected',lt);
+}
+$('tabRep').onclick=()=>tab('rep'); $('tabLt').onclick=()=>tab('lt');
+ltList(); ltPreview();
+})();
+</script>
+</body>
+</html>
