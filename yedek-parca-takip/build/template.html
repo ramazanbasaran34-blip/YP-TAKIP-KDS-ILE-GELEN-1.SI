@@ -58,6 +58,7 @@ input[type=search]{flex:1 1 200px}
 .menu-list{position:absolute;right:0;top:calc(100% + 6px);min-width:250px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;z-index:20;display:none}
 .menu.open .menu-list{display:block}
 .menu-list button{display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:var(--ink);font:inherit;padding:9px 10px;border-radius:7px;cursor:pointer}
+.menu-list button[hidden]{display:none}
 .menu-list button:hover{background:var(--accent-soft)}
 .menu-list .ic{width:34px;text-align:center;font-size:11px;font-weight:700;border-radius:5px;padding:3px 0;background:var(--accent-soft);color:var(--accent)}
 .menu-list small{display:block;color:var(--muted);font-size:11.5px}
@@ -83,7 +84,7 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .lt-tools{padding:10px 12px;border-bottom:1px solid var(--line);display:grid;gap:8px}
 .lt-tools .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .lt-items{max-height:68vh;overflow:auto}
-.lt-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.lt-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
 .lt-item:hover{background:var(--accent-soft)}
 .lt-item.active{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
 .lt-item .t{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -107,7 +108,6 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .sheet tbody tr:hover{background:#fff}
 .sheet td.kod{white-space:nowrap;width:31mm}.sheet td.ad{width:30mm}.sheet td.mdl{font-size:11.5px;line-height:1.3;color:#000;font-weight:600}
 .sheet .msg{margin-top:5mm;border:3px solid #b3261e;border-radius:2mm;background:#fdeceb;color:#000;padding:5mm 6mm;font-size:17px;font-weight:800;line-height:1.35;text-align:center;break-inside:avoid;page-break-inside:avoid}
-#printLetters{display:none}
 #capture{position:fixed;left:-10000px;top:0}#capture .sheet{box-shadow:none;margin:0}
 @media (max-width:860px){ .lt{grid-template-columns:1fr} .lt-list{position:static} .lt-items{max-height:40vh} }
 
@@ -126,13 +126,6 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
   tr{break-inside:avoid}
   .chip{border:1px solid #888;background:none!important;color:#000!important}
 
-  body.print-letters .wrap{display:none!important}
-  body.print-letters #printLetters{display:block}
-  body.print-letters{background:#fff}
-  #printLetters .sheet{box-shadow:none;width:auto;min-height:0;height:auto;padding:0;margin:0;break-after:page;page-break-after:always}
-  #printLetters .sheet:last-child{break-after:auto;page-break-after:auto}
-  #printLetters .sheet th,#printLetters .sheet td{padding:3px 6px;font-size:13px}
-  #printLetters .sheet td.mdl{font-size:11px}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -148,10 +141,13 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
     <div class="menu noprint" id="saveMenu">
       <button class="btn" id="saveBtn" aria-haspopup="true" aria-expanded="false">Farklı Kaydet ▾</button>
       <div class="menu-list" role="menu">
-        <button role="menuitem" data-fmt="xlsx"><span class="ic">XLSX</span><span>Excel olarak indir<small id="cntX"></small></span></button>
-        <button role="menuitem" data-fmt="pdf"><span class="ic">PDF</span><span>PDF olarak kaydet<small id="cntP">Açılan pencerede “PDF olarak kaydet”i seçin</small></span></button>
-        <button role="menuitem" data-fmt="jpg" hidden><span class="ic">JPG</span><span>JPG olarak kaydet<small id="cntJ"></small></span></button>
-        <button role="menuitem" data-fmt="html"><span class="ic">HTML</span><span>HTML olarak indir<small>Tek dosya, internetsiz açılır</small></span></button>
+        <button role="menuitem" data-fmt="xlsx" data-scope="rep"><span class="ic">XLSX</span><span>Excel olarak indir<small id="cntX"></small></span></button>
+        <button role="menuitem" data-fmt="pdf" data-scope="rep"><span class="ic">PDF</span><span>PDF olarak kaydet<small>Açılan pencerede “PDF olarak kaydet”i seçin</small></span></button>
+        <button role="menuitem" data-fmt="html" data-scope="rep"><span class="ic">HTML</span><span>HTML olarak indir<small>Tek dosya, internetsiz açılır</small></span></button>
+        <button role="menuitem" data-fmt="lpdf" data-scope="lt" hidden><span class="ic">PDF</span><span>Seçili servisi PDF kaydet<small class="cntSel"></small></span></button>
+        <button role="menuitem" data-fmt="ljpg" data-scope="lt" hidden><span class="ic">JPG</span><span>Seçili servisi JPG kaydet<small class="cntSel"></small></span></button>
+        <button role="menuitem" data-fmt="lzip" data-scope="lt" hidden><span class="ic">ZIP</span><span>Tüm servisler: ayrı ayrı PDF (ZIP)<small id="cntZip"></small></span></button>
+        <button role="menuitem" data-fmt="lall" data-scope="lt" hidden><span class="ic">PDF</span><span>Tüm servisler: tek PDF<small id="cntAll"></small></span></button>
       </div>
     </div>
   </header>
@@ -190,23 +186,17 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
       <aside class="lt-list">
         <div class="lt-tools">
           <input type="search" id="ltQ" placeholder="Bayi adı, cari kodu veya il ara…" aria-label="Servis ara">
-          <div class="row">
-            <button class="btn ghost" id="ltAll">Tümünü seç</button>
-            <button class="btn ghost" id="ltNone">Seçimi kaldır</button>
-          </div>
-          <button class="btn" id="ltPrint">Seçilenleri yazdır</button>
           <div class="sub" id="ltInfo"></div>
         </div>
         <div class="lt-items" id="ltItems"></div>
       </aside>
       <div class="lt-prev">
-        <p class="note noprint">Önizleme A4 dikey. Seçili servisleri sağ üstteki <b>Farklı Kaydet</b> menüsünden PDF veya JPG olarak kaydedebilirsiniz.</p>
+        <p class="note noprint">Soldan bir servis seçin (A4 dikey önizleme). Sağ üstteki <b>Farklı Kaydet</b> menüsünden seçili servisi PDF/JPG kaydedebilir ya da tüm servisleri ayrı ayrı PDF olarak ZIP içinde alabilirsiniz.</p>
         <div id="ltSheet"></div>
       </div>
     </div>
   </div>
 </div>
-<div id="printLetters" aria-hidden="true"></div>
 <div id="capture" aria-hidden="true"></div>
 
 <script>__XLSX__</script>
@@ -330,11 +320,11 @@ function sync(){
 }
 
 /* ---- Farklı Kaydet ---- */
-const menu=$('saveMenu'); let inLt=false;
+const menu=$('saveMenu');
 $('saveBtn').onclick=e=>{e.stopPropagation(); const o=menu.classList.toggle('open'); $('saveBtn').setAttribute('aria-expanded',o);};
 document.addEventListener('click',()=>{menu.classList.remove('open');$('saveBtn').setAttribute('aria-expanded',false);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')menu.classList.remove('open');});
-menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); const f=b.dataset.fmt; if(inLt){ if(f==='pdf')ltPrintNow(); else if(f==='jpg')ltJpg(); } else ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml})[f]();});
+menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml,lpdf:()=>ltSingle('pdf'),ljpg:()=>ltSingle('jpg'),lzip:ltZip,lall:ltAllPdf})[b.dataset.fmt]();});
 
 const stamp=()=>new Date().toISOString().slice(0,10);
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
@@ -384,8 +374,8 @@ const svc = {};
 eksik.forEach(r=>{(svc[r.cariKod] ||= {kod:r.cariKod,ad:r.cari,il:r.sehir,parts:[]}).parts.push({kod:r.stokKod,ad:r.stokAd,model:STOK[r.si].model.split(',').map(x=>x.trim()).filter(Boolean).join(', ')});});
 const SVC = Object.values(svc).sort((a,b)=>tr.compare(a.il,b.il)||tr.compare(a.ad,b.ad));
 SVC.forEach(s=>s.parts.sort((a,b)=>tr.compare(a.kod,b.kod)));
-const sel = new Set(SVC.map(s=>s.kod)); let active = SVC[0]?.kod; let ltq='';
-function sheetHtml(s, editable){
+let active = SVC[0]?.kod; let ltq='';
+function sheetHtml(s){
   return `<div class="sheet" data-k="${esc(s.kod)}">
     <div class="hd"><img src="${LOGO_K}" alt="e-Kuralkan"><div class="ttl">Servis Yedek Parça Takip Sistemi</div><img src="${LOGO_B}" alt="Bajaj"></div>
     <h2>Alım Yapılmayan Yedek Parçalar Listesi</h2>
@@ -402,56 +392,89 @@ function sheetHtml(s, editable){
 function ltList(){
   const q=ltq.trim().toLocaleLowerCase('tr');
   const items=SVC.filter(s=>!q||(s.ad+' '+s.kod+' '+s.il).toLocaleLowerCase('tr').includes(q));
-  $('ltItems').innerHTML = items.map(s=>`<div class="lt-item ${s.kod===active?'active':''}" data-k="${esc(s.kod)}"><input type="checkbox" ${sel.has(s.kod)?'checked':''} aria-label="Seç"><div><div class="t">${esc(s.ad)}</div><div class="s">${esc(s.il)} · ${esc(s.kod)}</div></div><div class="c">${s.parts.length} parça</div></div>`).join('') || '<div class="empty">Eşleşen servis yok.</div>';
+  $('ltItems').innerHTML = items.map(s=>`<div class="lt-item ${s.kod===active?'active':''}" data-k="${esc(s.kod)}" tabindex="0"><div><div class="t">${esc(s.ad)}</div><div class="s">${esc(s.il)} · ${esc(s.kod)}</div></div><div class="c">${s.parts.length} parça</div></div>`).join('') || '<div class="empty">Eşleşen servis yok.</div>';
   $('ltItems').querySelectorAll('.lt-item').forEach(el=>{
-    const k=el.dataset.k, cb=el.querySelector('input');
-    cb.onclick=e=>{e.stopPropagation(); cb.checked?sel.add(k):sel.delete(k); ltInfo();};
-    el.onclick=()=>{active=k; ltList(); ltPreview();};
+    const go=()=>{active=el.dataset.k; ltList(); ltPreview();};
+    el.onclick=go; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
   });
   ltInfo();
 }
-function ltCount(){return sel.size+' sayfa (seçili servisler)'+(sel.size>1?' · JPG\'ler ZIP içinde':'');}
-function ltInfo(){ $('cntJ').textContent=ltCount(); if(inLt)$('cntP').textContent=ltCount(); $('ltInfo').textContent=`${SVC.length} serviste eksik alım var · ${sel.size} seçili (${sel.size} sayfa)`; $('ltPrint').disabled=!sel.size; }
-function ltPreview(){
-  const s=svc[active]; $('ltSheet').innerHTML = s?sheetHtml(s,true):'<div class="empty">Servis seçin.</div>';
+function ltInfo(){
+  const s=svc[active];
+  $('ltInfo').textContent=`${SVC.length} serviste eksik alım var · Seçili: ${s?s.ad:'—'}`;
+  document.querySelectorAll('.cntSel').forEach(e=>e.textContent=s?s.ad:'');
+  $('cntZip').textContent=`${SVC.length} servis, her biri ayrı PDF dosyası`;
+  $('cntAll').textContent=`${SVC.length} sayfa, her servis ayrı sayfa`;
 }
+function ltPreview(){ const s=svc[active]; $('ltSheet').innerHTML = s?sheetHtml(s):'<div class="empty">Servis seçin.</div>'; }
 $('ltQ').oninput=e=>{ltq=e.target.value; ltList();};
-$('ltAll').onclick=()=>{SVC.forEach(s=>sel.add(s.kod)); ltList();};
-$('ltNone').onclick=()=>{sel.clear(); ltList();};
-function ltPrintNow(){
-  const list=SVC.filter(s=>sel.has(s.kod)); if(!list.length) return;
-  $('printLetters').innerHTML=list.map(s=>sheetHtml(s,false)).join('');
-  const style=document.createElement('style'); style.textContent='@page{size:A4 portrait;margin:12mm}'; document.head.appendChild(style);
-  document.body.classList.add('print-letters');
-  const old=document.title; document.title='eksik_alim_servis_yazilari_'+stamp();
-  const done=()=>{document.body.classList.remove('print-letters');style.remove();$('printLetters').innerHTML='';document.title=old;window.removeEventListener('afterprint',done);};
-  window.addEventListener('afterprint',done); window.print();
+
+function fname(s,ext){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'.'+ext;}
+async function renderSheet(s){
+  const cap=$('capture'); cap.innerHTML=sheetHtml(s);
+  const cv=await html2canvas(cap.firstElementChild,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+  cap.innerHTML='';
+  const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.88));
+  return {blob,w:cv.width,h:cv.height};
 }
-$('ltPrint').onclick=ltPrintNow;
-function fname(s){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'.jpg';}
-async function ltJpg(){
-  const list=SVC.filter(s=>sel.has(s.kod)); if(!list.length) return;
-  const btn=$('ltPrint'), old=btn.textContent; btn.disabled=true;
-  try{
-    const cap=$('capture'); const files=[];
-    for(let i=0;i<list.length;i++){
-      btn.textContent=`JPG hazırlanıyor… ${i+1}/${list.length}`;
-      cap.innerHTML=sheetHtml(list[i],false);
-      const cv=await html2canvas(cap.firstElementChild,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
-      const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.92));
-      files.push([fname(list[i]),blob]);
-    }
-    cap.innerHTML='';
-    if(files.length===1) download(files[0][1],files[0][0]);
-    else{ const z=new JSZip(); files.forEach(f=>z.file(f[0],f[1])); download(await z.generateAsync({type:'blob'}),`eksik_alim_servis_yazilari_${stamp()}.zip`); }
-  }catch(e){ alert('JPG oluşturulamadı: '+e.message); }
-  finally{ btn.textContent=old; ltInfo(); }
+/* Her sayfası tek JPEG görüntüden oluşan, A4 genişliğinde basit PDF yazıcı */
+function pdfFromJpegs(pages){
+  const enc=new TextEncoder(), chunks=[], offs=[]; let len=0;
+  const push=b=>{ if(typeof b==='string') b=enc.encode(b); chunks.push(b); len+=b.length; };
+  const obj=(n,fn)=>{ offs[n]=len; push(n+' 0 obj\n'); fn(); push('\nendobj\n'); };
+  const W=595.28, N=pages.length, total=3+3*N;
+  push('%PDF-1.4\n%âãÏÓ\n');
+  obj(1,()=>push('<< /Type /Catalog /Pages 2 0 R >>'));
+  obj(2,()=>push(`<< /Type /Pages /Count ${N} /Kids [${pages.map((_,i)=>(3+3*i)+' 0 R').join(' ')}] >>`));
+  pages.forEach((p,i)=>{
+    const a=3+3*i, H=(W*p.h/p.w).toFixed(2);
+    obj(a,()=>push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /Im0 ${a+2} 0 R >> >> /Contents ${a+1} 0 R >>`));
+    const cs=`q ${W} 0 0 ${H} 0 0 cm /Im0 Do Q`;
+    obj(a+1,()=>push(`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`));
+    obj(a+2,()=>{ push(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`); push(p.jpg); push('\nendstream'); });
+  });
+  const xref=len;
+  push(`xref\n0 ${total}\n0000000000 65535 f \n`);
+  for(let n=1;n<total;n++) push(String(offs[n]).padStart(10,'0')+' 00000 n \n');
+  push(`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
+  return new Blob(chunks,{type:'application/pdf'});
 }
+const jpgBytes=async r=>({jpg:new Uint8Array(await r.blob.arrayBuffer()),w:r.w,h:r.h});
+
+let busy=false;
+async function withBusy(fn){
+  if(busy) return; busy=true;
+  const b=$('saveBtn'), old=b.textContent; b.disabled=true;
+  try{ await fn(t=>{b.textContent=t;}); }
+  catch(e){ alert('Kaydedilemedi: '+e.message); }
+  finally{ busy=false; b.disabled=false; b.textContent=old; }
+}
+function ltSingle(kind){ const s=svc[active]; if(!s) return; return withBusy(async say=>{
+  say(kind.toUpperCase()+' hazırlanıyor…');
+  const r=await renderSheet(s);
+  if(kind==='jpg') download(r.blob,fname(s,'jpg'));
+  else download(pdfFromJpegs([await jpgBytes(r)]),fname(s,'pdf'));
+});}
+function ltZip(){ return withBusy(async say=>{
+  const z=new JSZip();
+  for(let i=0;i<SVC.length;i++){
+    say(`PDF hazırlanıyor… ${i+1}/${SVC.length}`);
+    const pdf=pdfFromJpegs([await jpgBytes(await renderSheet(SVC[i]))]);
+    z.file(fname(SVC[i],'pdf'),pdf);
+  }
+  say('ZIP oluşturuluyor…');
+  download(await z.generateAsync({type:'blob',compression:'STORE'}),`eksik_alim_servis_pdf_${stamp()}.zip`);
+});}
+function ltAllPdf(){ return withBusy(async say=>{
+  const pages=[];
+  for(let i=0;i<SVC.length;i++){ say(`PDF hazırlanıyor… ${i+1}/${SVC.length}`); pages.push(await jpgBytes(await renderSheet(SVC[i]))); }
+  download(pdfFromJpegs(pages),`eksik_alim_tum_servisler_${stamp()}.pdf`);
+});}
+
 function tab(which){
   const lt = which==='lt';
-  inLt=lt; $('viewReport').hidden=lt; $('viewLetters').hidden=!lt;
-  menu.querySelector('[data-fmt=xlsx]').hidden=lt; menu.querySelector('[data-fmt=html]').hidden=lt; menu.querySelector('[data-fmt=jpg]').hidden=!lt;
-  $('cntP').textContent = lt? ltCount() : 'Açılan pencerede “PDF olarak kaydet”i seçin'; $('cntJ').textContent=ltCount();
+  $('viewReport').hidden=lt; $('viewLetters').hidden=!lt;
+  menu.querySelectorAll('[data-scope]').forEach(b=>{b.hidden=(b.dataset.scope==='lt')!==lt;});
   $('tabRep').setAttribute('aria-selected',!lt); $('tabLt').setAttribute('aria-selected',lt);
 }
 $('tabRep').onclick=()=>tab('rep'); $('tabLt').onclick=()=>tab('lt');
