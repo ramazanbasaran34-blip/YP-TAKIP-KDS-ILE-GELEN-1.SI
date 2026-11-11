@@ -76,6 +76,42 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .foot{padding:10px 14px;color:var(--muted);font-size:12px}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 .printonly{display:none}
+.tabs{overflow-x:auto}
+.tabs button{white-space:nowrap}
+.mx-wrap{overflow:auto;max-height:74vh}
+.mx{border-collapse:separate;border-spacing:0;width:100%;min-width:940px;table-layout:fixed}
+.mx th,.mx td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:4px 5px;white-space:normal;vertical-align:middle;overflow-wrap:anywhere}
+.mx th{cursor:default;text-align:center;background:var(--card);top:0;z-index:2;font-size:10px;font-weight:600;color:var(--ink);line-height:1.2}
+.mx th small{display:block;font-family:ui-monospace,Consolas,monospace;font-size:8.5px;color:var(--muted);font-weight:500;margin-bottom:1px;word-break:break-all}
+.mx th.first,.mx td.first{text-align:left;font-weight:600;font-size:11.5px;line-height:1.25}
+.mx td.first span{display:block;color:var(--muted);font-weight:500;font-size:9.5px}
+.mx th.il,.mx td.il{text-align:left;font-size:10.5px}
+.mx td.c{text-align:center;font-size:12px}
+.mx td.yok{background:var(--bad-soft);color:var(--bad);font-weight:700;text-align:center;font-size:10.5px;letter-spacing:.02em}
+.mx tr.tot td{background:var(--accent-soft);font-weight:700;text-align:center;font-size:11.5px}
+.mx tr.tot td.first{text-align:left}
+.mx tbody tr:hover td:not(.yok){background:var(--accent-soft)}
+.legend{padding:8px 14px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+.legend b.y{color:var(--bad)}
+.docpg{box-sizing:border-box;background:#fff;color:#000;position:relative;overflow:hidden;font-family:'Inter',system-ui,'Segoe UI',Arial,sans-serif}
+.docpg.land{width:297mm;height:210mm;padding:10mm}
+.docpg.port{width:210mm;height:297mm;padding:10mm}
+.docpg .dh{display:flex;align-items:center;justify-content:space-between;gap:8mm;border-bottom:3px solid #0b2a5b;padding-bottom:3mm;margin-bottom:3mm}
+.docpg .dh img{height:9mm;width:auto;display:block}
+.docpg .dt{flex:1;text-align:center;font-weight:700;color:#0b2a5b;font-size:15px;letter-spacing:.05em;line-height:1.25}
+.docpg .dt span{font-size:11px;letter-spacing:.06em}
+.docpg .ds{font-size:10px;color:#333;margin-bottom:3mm;font-weight:500}
+.docpg table{width:100%;border-collapse:collapse;font-size:9.5px}
+.docpg th,.docpg td{border:1px solid #8c9aae;padding:2.5px 4px;text-align:left;vertical-align:top;position:static;background:#fff;white-space:normal;cursor:default;color:#000;min-width:0;font-weight:500}
+.docpg th{background:#0b2a5b;color:#fff;font-weight:600;font-size:9px;text-align:center}
+.docpg th small{display:block;font-family:ui-monospace,Consolas,monospace;font-size:7.5px;font-weight:500;word-break:break-all;margin-bottom:1px}
+.docpg td.n,.docpg th.n{text-align:center}
+.docpg td.yok{text-align:center;font-weight:700;color:#b3261e;background:#fdecea}
+.docpg td.b{font-weight:700}
+.docpg tr.tot td{background:#e6edf7;font-weight:700;text-align:center}
+.docpg tr.tot td:first-child{text-align:left}
+.docpg .pf{position:absolute;left:10mm;right:10mm;bottom:4mm;font-size:8.5px;color:#555;display:flex;justify-content:space-between}
+
 
 .tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--line)}
 .tabs button{font:inherit;border:0;background:transparent;color:var(--muted);padding:9px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:600}
@@ -146,11 +182,13 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
       <button class="btn" id="saveBtn" aria-haspopup="true" aria-expanded="false">Farklı Kaydet ▾</button>
       <div class="menu-list" role="menu">
         <button role="menuitem" data-fmt="xlsx" data-scope="rep"><span class="ic">XLSX</span><span>Excel olarak indir<small id="cntX"></small></span></button>
-        <button role="menuitem" data-fmt="pdf" data-scope="rep"><span class="ic">PDF</span><span>PDF olarak kaydet<small>Açılan pencerede “PDF olarak kaydet”i seçin</small></span></button>
+        <button role="menuitem" data-fmt="pdf" data-scope="rep"><span class="ic">PDF</span><span>PDF olarak kaydet<small>Görünen liste, A4 yatay PDF dosyası</small></span></button>
         <button role="menuitem" data-fmt="html" data-scope="rep"><span class="ic">HTML</span><span>HTML olarak indir<small>Tek dosya, internetsiz açılır</small></span></button>
         <button role="menuitem" data-fmt="lpdf" data-scope="lt" hidden><span class="ic">PDF</span><span>Seçili servisi PDF kaydet<small class="cntSel"></small></span></button>
         <button role="menuitem" data-fmt="ljpg" data-scope="lt" hidden><span class="ic">JPG</span><span>Seçili servisi JPG kaydet<small class="cntSel"></small></span></button>
         <button role="menuitem" data-fmt="lzip" data-scope="lt" hidden><span class="ic">ZIP</span><span>Tüm servisler: ayrı ayrı PDF (ZIP)<small id="cntZip"></small></span></button>
+        <button role="menuitem" data-fmt="mxx" data-scope="mx" hidden><span class="ic">XLSX</span><span>Excel olarak indir<small>Servis tablosu (YOK işaretli)</small></span></button>
+        <button role="menuitem" data-fmt="mxp" data-scope="mx" hidden><span class="ic">PDF</span><span>PDF olarak kaydet<small>A4 yatay PDF dosyası</small></span></button>
         <button role="menuitem" data-fmt="lall" data-scope="lt" hidden><span class="ic">PDF</span><span>Tüm servisler: tek PDF<small id="cntAll"></small></span></button>
       </div>
     </div>
@@ -158,6 +196,7 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 
   <nav class="tabs noprint" role="tablist">
     <button role="tab" id="tabRep" aria-selected="true">Genel Rapor</button>
+    <button role="tab" id="tabMx" aria-selected="false">Eksik Parçası Olan Servis Tablosu</button>
     <button role="tab" id="tabLt" aria-selected="false">Eksik Alım Yapan Servisler</button>
   </nav>
 
@@ -184,11 +223,30 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
   </section>
   </div>
 
+  <div id="viewMx" hidden>
+    <section class="panel">
+      <div class="bar">
+        <select id="mxSort" aria-label="Sıralama">
+          <option value="eksik">Sıralama: en çok eksikten en aza</option>
+          <option value="ad">Sıralama: servis adı (A-Z)</option>
+          <option value="il">Sıralama: il (A-Z)</option>
+        </select>
+        <input type="search" id="mxQ" placeholder="Servis adı, cari kodu veya il ara…" aria-label="Servis ara">
+        <select id="mxIl" aria-label="İl"></select>
+        <button class="btn ghost" id="mxReset">Temizle</button>
+      </div>
+      <div class="mx-wrap"><table class="mx" id="mxTbl"></table></div>
+      <div class="empty" id="mxEmpty" hidden>Bu filtreyle eşleşen servis yok.</div>
+      <div class="legend" id="mxFoot"></div>
+    </section>
+  </div>
+
   <div id="viewLetters" hidden>
     <div class="lt">
       <aside class="lt-list">
         <div class="lt-tools">
           <input type="search" id="ltQ" placeholder="Bayi adı, cari kodu veya il ara…" aria-label="Servis ara">
+          <button class="btn" id="ltZipBtn" title="Her servis için ayrı bir PDF oluşturur ve hepsini tek ZIP dosyasında indirir">Tüm servisler: ayrı ayrı PDF (ZIP)</button>
           <div class="sub" id="ltInfo"></div>
         </div>
         <div class="lt-items" id="ltItems"></div>
@@ -301,7 +359,7 @@ const menu=$('saveMenu');
 $('saveBtn').onclick=e=>{e.stopPropagation(); const o=menu.classList.toggle('open'); $('saveBtn').setAttribute('aria-expanded',o);};
 document.addEventListener('click',()=>{menu.classList.remove('open');$('saveBtn').setAttribute('aria-expanded',false);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')menu.classList.remove('open');});
-menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml,lpdf:()=>ltSingle('pdf'),ljpg:()=>ltSingle('jpg'),lzip:ltZip,lall:ltAllPdf})[b.dataset.fmt]();});
+menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml,lpdf:()=>ltSingle('pdf'),ljpg:()=>ltSingle('jpg'),lzip:ltZip,lall:ltAllPdf,mxx:mxXlsx,mxp:mxPdf})[b.dataset.fmt]();});
 
 const stamp=()=>new Date().toISOString().slice(0,10);
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
@@ -322,11 +380,12 @@ function saveXlsx(){
   XLSX.utils.book_append_sheet(wb,ws,'Liste'); XLSX.utils.book_append_sheet(wb,ws2,'Stok Özeti'); XLSX.utils.book_append_sheet(wb,ws3,'Cari Özeti');
   XLSX.writeFile(wb,`yedek_parca_eksik_${stamp()}.xlsx`);
 }
-function savePdf(){
-  const old=document.title; document.title=`yedek_parca_eksik_${stamp()}`;
-  const done=()=>{document.title=old;window.removeEventListener('afterprint',done);};
-  window.addEventListener('afterprint',done); window.print();
-}
+function savePdf(){ return withBusy(async say=>{
+  const rows=filtered(), cari=new Set(rows.map(r=>r.cariKod)).size;
+  const head='<thead><tr><th>Cari Kodu</th><th>Cari İsim</th><th>Şehir</th><th>Stok Kodu</th><th>Stok Adı</th><th>Adet</th><th>Bekleyen</th><th>Durum</th></tr></thead>';
+  const trs=rows.map(r=>`<tr><td>${esc(r.cariKod)}</td><td>${esc(r.cari)}</td><td>${esc(r.sehir)}</td><td>${esc(r.stokKod)}</td><td>${esc(r.stokAd)}</td><td class="n">${nf.format(r.adet)}</td><td class="n">${nf.format(r.bek)}</td><td class="${r.durum==='Eksik'?'yok':''}">${esc(r.durum)}</td></tr>`);
+  await docPdf({title:'EKSİK STOK RAPORU',sub:`Rapor tarihi: ${today} · ${nf.format(rows.length)} satır · ${nf.format(cari)} cari · Görünüm: ${filterText(rows)}`,head,rows:trs,orient:'landscape',file:'yedek_parca_eksik_stok',say});
+});}
 function saveHtml(){
   const rows=filtered(), cari=new Set(rows.map(r=>r.cariKod)).size;
   const tr_=rows.map(r=>`<tr><td>${esc(r.cariKod)}</td><td>${esc(r.cari)}</td><td>${esc(r.sehir)}</td><td>${esc(r.stokKod)}</td><td>${esc(r.stokAd)}</td><td class="n">${nf.format(r.adet)}</td><td class="n">${nf.format(r.bek)}</td><td>${esc(r.durum)}</td></tr>`).join('');
@@ -387,6 +446,7 @@ function ltInfo(){
 }
 function ltPreview(){ const s=svc[active]; $('ltSheet').innerHTML = s?sheetHtml(s):'<div class="empty">Servis seçin.</div>'; }
 $('ltQ').oninput=e=>{ltq=e.target.value; ltList();};
+$('ltZipBtn').onclick=()=>ltZip();
 
 function fname(s,ext){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'.'+ext;}
 async function renderSheet(s){
@@ -409,11 +469,11 @@ async function cvPage(cv){
   const b=await cvJpg(cv); return {data:new Uint8Array(await b.arrayBuffer()),w:cv.width,h:cv.height,filter:'DCTDecode'};
 }
 /* Her sayfası tek JPEG görüntüden oluşan, A4 genişliğinde basit PDF yazıcı */
-function pdfFromPages(pages){
+function pdfFromPages(pages,W=595.28){
   const enc=new TextEncoder(), chunks=[], offs=[]; let len=0;
   const push=b=>{ if(typeof b==='string') b=enc.encode(b); chunks.push(b); len+=b.length; };
   const obj=(n,fn)=>{ offs[n]=len; push(n+' 0 obj\n'); fn(); push('\nendobj\n'); };
-  const W=595.28, N=pages.length, total=3+3*N;
+  const N=pages.length, total=3+3*N;
   push('%PDF-1.4\n%âãÏÓ\n');
   obj(1,()=>push('<< /Type /Catalog /Pages 2 0 R >>'));
   obj(2,()=>push(`<< /Type /Pages /Count ${N} /Kids [${pages.map((_,i)=>(3+3*i)+' 0 R').join(' ')}] >>`));
@@ -434,10 +494,10 @@ function pdfFromPages(pages){
 let busy=false;
 async function withBusy(fn){
   if(busy) return; busy=true;
-  const b=$('saveBtn'), old=b.textContent; b.disabled=true;
-  try{ await fn(t=>{b.textContent=t;}); }
+  const bs=[$('saveBtn'),$('ltZipBtn')].filter(Boolean), olds=bs.map(b=>b.textContent); bs.forEach(b=>b.disabled=true);
+  try{ await fn(t=>bs.forEach(b=>{b.textContent=t;})); }
   catch(e){ alert('Kaydedilemedi: '+e.message); }
-  finally{ busy=false; b.disabled=false; b.textContent=old; }
+  finally{ busy=false; bs.forEach((b,i)=>{b.disabled=false;b.textContent=olds[i];}); }
 }
 function ltSingle(kind){ const s=svc[active]; if(!s) return; return withBusy(async say=>{
   say(kind.toUpperCase()+' hazırlanıyor…');
@@ -461,13 +521,88 @@ function ltAllPdf(){ return withBusy(async say=>{
   download(pdfFromPages(pages),`eksik_alim_tum_servisler_${stamp()}.pdf`);
 });}
 
-function tab(which){
-  const lt = which==='lt';
-  $('viewReport').hidden=lt; $('viewLetters').hidden=!lt;
-  menu.querySelectorAll('[data-scope]').forEach(b=>{b.hidden=(b.dataset.scope==='lt')!==lt;});
-  $('tabRep').setAttribute('aria-selected',!lt); $('tabLt').setAttribute('aria-selected',lt);
+/* ---- Eksik Parça Olan Servisler (en çoktan en aza) ---- */
+const SV=[...SVC].sort((a,b)=>b.parts.length-a.parts.length||tr.compare(a.ad,b.ad));
+
+/* ---- Yazdırma / PDF için A4 belge (kurumsal başlıklı) ---- */
+/* Çok sayfalı, satır bölmeyen kurumsal PDF (yazdırma penceresi gerektirmez) */
+async function docPdf({title,sub,head,rows,orient,file,say}){
+  await Promise.all(['400','500','600','700'].map(w=>document.fonts.load(w+' 13px Inter'))); await document.fonts.ready;
+  const cap=$('capture'), land=orient==='landscape', MM=96/25.4; cap.innerHTML='';
+  const header=`<div class="dh"><img src="${LOGO_K}" alt=""><div class="dt">SERVİS YEDEK PARÇA TAKİP SİSTEMİ<br><span>${esc(title)}</span></div><img src="${LOGO_B}" alt=""></div><div class="ds">${esc(sub)}</div>`;
+  const mk=first=>{const pg=document.createElement('div'); pg.className='docpg '+(land?'land':'port'); pg.innerHTML=(first?header:'')+`<table>${head}<tbody></tbody></table><div class="pf"><span>${esc(title)}</span><span class="pn"></span></div>`; cap.appendChild(pg); return pg;};
+  const pgs=[mk(true)]; let pg=pgs[0], tb=pg.querySelector('tbody');
+  for(const r of rows){
+    tb.insertAdjacentHTML('beforeend',r); const last=tb.lastElementChild;
+    const limit=pg.getBoundingClientRect().top+pg.offsetHeight-17*MM;
+    if(last.getBoundingClientRect().bottom>limit && tb.children.length>1){ tb.removeChild(last); pg=mk(false); pgs.push(pg); tb=pg.querySelector('tbody'); tb.appendChild(last); }
+  }
+  pgs.forEach((p,i)=>p.querySelector('.pn').textContent=`Sayfa ${i+1} / ${pgs.length} · ${today}`);
+  const out=[];
+  for(let i=0;i<pgs.length;i++){
+    say(`PDF hazırlanıyor… sayfa ${i+1}/${pgs.length}`);
+    const cv=await html2canvas(pgs[i],{scale:2.5,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    out.push(await cvPage(cv));
+  }
+  cap.innerHTML='';
+  download(pdfFromPages(out,land?841.89:595.28),`${file}_${stamp()}.pdf`);
 }
-$('tabRep').onclick=()=>tab('rep'); $('tabLt').onclick=()=>tab('lt');
+const subLine=(n,extra)=>`Rapor tarihi: ${today} · ${n} servis${extra?' · '+extra:''}`;
+
+/* ---- Eksik Parçası Olan Servis Tablosu (matris) ---- */
+const CELL={}; ROWS.forEach(r=>{(CELL[r.cariKod] ||= [])[r.si]=r.durum;});
+(function(){ const ils=[...new Set(SV.map(s=>s.il))].sort(tr.compare); $('mxIl').innerHTML='<option value="">Tüm iller</option>'+ils.map(i=>`<option>${esc(i)}</option>`).join(''); })();
+function mxFiltered(){
+  const q=$('mxQ').value.trim().toLocaleLowerCase('tr'), il=$('mxIl').value, so=$('mxSort').value;
+  const l=SV.filter(s=>(!il||s.il===il)&&(!q||(s.ad+' '+s.kod+' '+s.il).toLocaleLowerCase('tr').includes(q)));
+  if(so==='ad') l.sort((a,b)=>tr.compare(a.ad,b.ad));
+  else if(so==='il') l.sort((a,b)=>tr.compare(a.il,b.il)||tr.compare(a.ad,b.ad));
+  else l.sort((a,b)=>b.parts.length-a.parts.length||tr.compare(a.ad,b.ad));
+  return l;
+}
+const isYok=(s,i)=>(CELL[s.kod]||[])[i]==='Eksik';
+function mxRender(){
+  const list=mxFiltered();
+  const head=`<colgroup><col style="width:18%"><col style="width:8%">${STOK.map(()=>'<col style="width:7.4%">').join('')}</colgroup><thead><tr><th class="first">Servis Adı</th><th class="il">İl</th>${STOK.map(s=>`<th title="${esc(s.model)}"><small>${esc(s.kod)}</small>${esc(s.ad.length>22?s.ad.slice(0,22)+'…':s.ad)}</th>`).join('')}</tr></thead>`;
+  const tot=STOK.map((_,i)=>list.filter(s=>isYok(s,i)).length);
+  const totRow=`<tr class="tot"><td class="first">Eksik servis sayısı</td><td></td>${tot.map(n=>`<td>${n}</td>`).join('')}</tr>`;
+  const body=list.map(s=>`<tr><td class="first">${esc(s.ad)}<span>${esc(s.kod)}</span></td><td class="il">${esc(s.il)}</td>${STOK.map((_,i)=>isYok(s,i)?'<td class="yok">YOK</td>':'<td></td>').join('')}</tr>`).join('');
+  $('mxTbl').innerHTML=head+`<tbody>${list.length?totRow+body:''}</tbody>`;
+  $('mxEmpty').hidden=list.length>0;
+  $('mxFoot').innerHTML=`${list.length} servis · <b class="y">YOK</b>: adet ve bekleyen 0 olan parça. Boş hücre: parça alınmış ya da siparişi bekliyor. Sütun başlığının üzerine gelince uyumlu modeller görünür.`;
+}
+['mxSort','mxIl'].forEach(id=>$(id).onchange=mxRender); $('mxQ').oninput=mxRender;
+$('mxReset').onclick=()=>{$('mxQ').value='';$('mxIl').value='';$('mxSort').value='eksik';mxRender();};
+function mxXlsx(){
+  const list=mxFiltered();
+  const head=['Servis Adı','Cari Kodu','İl',...STOK.map(s=>s.ad+' ('+s.kod+')')];
+  const aoa=[head,...list.map(s=>[s.ad,s.kod,s.il,...STOK.map((_,i)=>isYok(s,i)?'YOK':'')]),
+    ['Eksik servis sayısı','','',...STOK.map((_,i)=>list.filter(s=>isYok(s,i)).length)]];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:34},{wch:11},{wch:14},...STOK.map(()=>({wch:20}))];
+  ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(list.length,1),c:head.length-1}})};
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Servis Tablosu');
+  XLSX.writeFile(wb,`eksik_parca_servis_tablosu_${stamp()}.xlsx`);
+}
+function mxPdf(){ return withBusy(async say=>{
+  const list=mxFiltered();
+  const head=`<thead><tr><th>Servis Adı</th><th>İl</th>${STOK.map(s=>`<th><small>${esc(s.kod)}</small>${esc(s.ad.length>26?s.ad.slice(0,26)+'…':s.ad)}</th>`).join('')}</tr></thead>`;
+  const tot=STOK.map((_,i)=>list.filter(s=>isYok(s,i)).length);
+  const rows=[`<tr class="tot"><td>Eksik servis sayısı</td><td></td>${tot.map(n=>`<td>${n}</td>`).join('')}</tr>`].concat(
+    list.map(s=>`<tr><td class="b">${esc(s.ad)}</td><td>${esc(s.il)}</td>${STOK.map((_,i)=>isYok(s,i)?'<td class="yok">YOK</td>':'<td></td>').join('')}</tr>`));
+  const f=[$('mxIl').value&&('İl: '+$('mxIl').value),$('mxQ').value.trim()&&('Arama: '+$('mxQ').value.trim())].filter(Boolean).join(' · ');
+  await docPdf({title:'EKSİK PARÇASI OLAN SERVİS TABLOSU',sub:subLine(list.length,'YOK: adet ve bekleyen 0'+(f?' · '+f:'')),head,rows,orient:'landscape',file:'eksik_parca_servis_tablosu',say});
+});}
+
+function tab(which){
+  const views={rep:'viewReport',mx:'viewMx',lt:'viewLetters'};
+  Object.entries(views).forEach(([k,id])=>{$(id).hidden=k!==which;});
+  menu.querySelectorAll('[data-scope]').forEach(b=>{b.hidden=!b.dataset.scope.split(' ').includes(which);});
+  const tabs={rep:'tabRep',mx:'tabMx',lt:'tabLt'};
+  Object.entries(tabs).forEach(([k,id])=>$(id).setAttribute('aria-selected',k===which));
+}
+$('tabRep').onclick=()=>tab('rep'); $('tabMx').onclick=()=>tab('mx'); $('tabLt').onclick=()=>tab('lt');
+mxRender();
 ltList(); ltPreview();
 })();
 </script>
