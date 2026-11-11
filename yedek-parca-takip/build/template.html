@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yedek Parça Eksik Stok Raporu</title>
 <style>
+__FONTS__
 :root{
   --bg:#f5f6f8; --card:#ffffff; --ink:#1b2430; --muted:#5d6b7c; --line:#e1e5ea;
   --accent:#1f5fbf; --accent-soft:#e6efff;
@@ -21,7 +22,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
 header.top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
 h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
@@ -92,22 +93,25 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .lt-item .c{font-variant-numeric:tabular-nums;font-size:12px;color:var(--bad);font-weight:700}
 .lt-prev{overflow:auto;padding:4px}
 .lt-prev .note{color:var(--muted);font-size:12px;margin:0 0 8px}
-.sheet{background:#fff;color:#000;width:210mm;min-height:297mm;padding:12mm;margin:0 auto;box-shadow:0 2px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;font-size:13px;line-height:1.4}
-.sheet .hd{display:flex;justify-content:space-between;align-items:center;gap:6mm;padding-bottom:4mm;border-bottom:2px solid #1f5fbf}
-.sheet .hd .ttl{flex:1 1 auto;text-align:center;font-size:27px;font-weight:800;line-height:1.12;color:#0b2a5b;letter-spacing:.005em}
-.sheet .hd img{height:9mm;flex:none;width:auto;display:block}
-.sheet h2{font-size:21px;font-weight:800;margin:5mm 0 3mm;text-align:center;letter-spacing:.01em}
-.sheet .info{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;border:1.5px solid #444;padding:3mm 5mm;margin-bottom:4mm;font-size:15px;font-weight:600}
-.sheet .info b{font-weight:800}
-.sheet .info .ilce{min-width:40mm;display:inline-block;border-bottom:1px dotted #888;outline:none}
-.sheet .info .ilce:empty::before{content:"İlçe yazın";color:#aaa}
+.sheet{background:#fff;color:#111;width:210mm;min-height:297mm;padding:12mm 13mm;margin:0 auto;box-shadow:0 2px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;font-family:'Inter',system-ui,'Segoe UI',Arial,sans-serif;font-size:13px;line-height:1.4;font-weight:500;-webkit-font-smoothing:antialiased}
+.sheet .hd{display:flex;justify-content:space-between;align-items:center;gap:6mm;padding-bottom:5mm}
+.sheet .hd img{height:9mm;width:auto;flex:none;display:block}
+.sheet .hd .ttl{flex:1 1 auto;text-align:center;font-size:20px;font-weight:700;line-height:1.25;color:#0b2a5b;letter-spacing:.06em}
+.sheet .rule{height:4px;background:#0b2a5b;border-radius:1px}
+.sheet .rule2{height:1px;background:#9fb3d1;margin-top:2px}
+.sheet h2{font-size:15.5px;font-weight:700;letter-spacing:.08em;text-align:center;color:#0b2a5b;margin:7mm 0 4.5mm}
+.sheet .info{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;border:1px solid #c5cedb;background:linear-gradient(to right,#0b2a5b 0,#0b2a5b 5px,#f4f7fb 5px,#f4f7fb 100%);padding:3.5mm 5mm 3.5mm 7mm;margin-bottom:5mm;font-size:14.5px;font-weight:600;color:#000}
+.sheet .info b{font-weight:600;color:#44546a}
 .sheet table{width:100%;border-collapse:collapse}
-.sheet th,.sheet td{border:1px solid #444;padding:3px 6px;color:#000;background:#fff;text-align:left;position:static;cursor:default;font-size:13.5px;font-weight:600;white-space:normal}
-.sheet th{background:#dfe5ee;font-size:13px;font-weight:800}
+.sheet th,.sheet td{border:1px solid #c5cedb;padding:4px 7px;color:#111;background:#fff;text-align:left;position:static;cursor:default;font-size:13px;font-weight:500;white-space:normal;vertical-align:middle}
+.sheet th{background:#0b2a5b;border-color:#0b2a5b;color:#fff;font-size:12px;font-weight:600;letter-spacing:.03em}
+.sheet tbody tr:nth-child(even) td{background:#f4f7fb}
+.sheet tbody tr:hover{background:transparent}
 .sheet th.n,.sheet td.n{text-align:center;width:12mm}
-.sheet tbody tr:hover{background:#fff}
-.sheet td.kod{white-space:nowrap;width:31mm}.sheet td.ad{width:30mm}.sheet td.mdl{font-size:11.5px;line-height:1.3;color:#000;font-weight:600}
-.sheet .msg{margin-top:5mm;border:3px solid #b3261e;border-radius:2mm;background:#fdeceb;color:#000;padding:5mm 6mm;font-size:17px;font-weight:800;line-height:1.35;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.sheet td.kod{white-space:nowrap;width:33mm;font-weight:600;color:#000}
+.sheet td.ad{width:31mm;font-weight:600;color:#000}
+.sheet td.mdl{font-size:11.5px;line-height:1.35;color:#1b2430;font-weight:500}
+.sheet .msg{margin-top:6mm;border:1.5px solid #b3261e;background:linear-gradient(to right,#b3261e 0,#b3261e 9px,#fdf1f0 9px,#fdf1f0 100%);color:#6e0f0a;padding:5mm 6mm 5mm 9mm;font-size:16px;font-weight:700;line-height:1.4;text-align:center;break-inside:avoid;page-break-inside:avoid}
 #capture{position:fixed;left:-10000px;top:0}#capture .sheet{box-shadow:none;margin:0}
 @media (max-width:860px){ .lt{grid-template-columns:1fr} .lt-list{position:static} .lt-items{max-height:40vh} }
 
@@ -377,11 +381,13 @@ SVC.forEach(s=>s.parts.sort((a,b)=>tr.compare(a.kod,b.kod)));
 let active = SVC[0]?.kod; let ltq='';
 function sheetHtml(s){
   return `<div class="sheet" data-k="${esc(s.kod)}">
-    <div class="hd"><img src="${LOGO_K}" alt="e-Kuralkan"><div class="ttl">Servis Yedek Parça Takip Sistemi</div><img src="${LOGO_B}" alt="Bajaj"></div>
-    <h2>Alım Yapılmayan Yedek Parçalar Listesi</h2>
+    <div class="hd"><img src="${LOGO_K}" alt="e-Kuralkan"><div class="ttl">SERVİS YEDEK PARÇA<br>TAKİP SİSTEMİ</div><img src="${LOGO_B}" alt="Bajaj"></div>
+    <div class="rule"></div><div class="rule2"></div>
+    <h2>ALIM YAPILMAYAN YEDEK PARÇALAR LİSTESİ</h2>
     <div class="info">
-      <b>Bayi Adı:</b><span>${esc(s.ad)} <span style="color:#666">(${esc(s.kod)})</span></span>
+      <b>Bayi Adı:</b><span>${esc(s.ad)} <span style="color:#44546a;font-weight:500">(${esc(s.kod)})</span></span>
       <b>İl:</b><span>${esc(s.il)}</span>
+      <b>Tarih:</b><span>${today}</span>
     </div>
     <table><thead><tr><th class="n">Sıra</th><th>Stok Kodu</th><th>Stok Adı</th><th>Uyumlu Modeller</th></tr></thead><tbody>
     ${s.parts.map((p,i)=>`<tr><td class="n">${i+1}</td><td class="kod">${esc(p.kod)}</td><td class="ad">${esc(p.ad)}</td><td class="mdl">${esc(p.model)}</td></tr>`).join('')}
@@ -411,14 +417,26 @@ $('ltQ').oninput=e=>{ltq=e.target.value; ltList();};
 
 function fname(s,ext){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'.'+ext;}
 async function renderSheet(s){
+  await Promise.all(['400','500','600','700'].map(w=>document.fonts.load(w+' 13px Inter')));
+  await document.fonts.ready;
   const cap=$('capture'); cap.innerHTML=sheetHtml(s);
-  const cv=await html2canvas(cap.firstElementChild,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+  const cv=await html2canvas(cap.firstElementChild,{scale:2.5,backgroundColor:'#ffffff',useCORS:true,logging:false});
   cap.innerHTML='';
-  const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.88));
-  return {blob,w:cv.width,h:cv.height};
+  return cv;
+}
+const cvJpg=cv=>new Promise(r=>cv.toBlob(r,'image/jpeg',0.95));
+/* Kayıpsız (Flate) görüntü: yazı kenarları JPEG gibi bulanıklaşmaz */
+async function cvPage(cv){
+  if(typeof CompressionStream==='function'){
+    const d=cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data, n=cv.width*cv.height, rgb=new Uint8Array(n*3);
+    for(let i=0,j=0;i<n;i++){ rgb[j++]=d[i*4]; rgb[j++]=d[i*4+1]; rgb[j++]=d[i*4+2]; }
+    const z=new Blob([rgb]).stream().pipeThrough(new CompressionStream('deflate'));
+    return {data:new Uint8Array(await new Response(z).arrayBuffer()),w:cv.width,h:cv.height,filter:'FlateDecode'};
+  }
+  const b=await cvJpg(cv); return {data:new Uint8Array(await b.arrayBuffer()),w:cv.width,h:cv.height,filter:'DCTDecode'};
 }
 /* Her sayfası tek JPEG görüntüden oluşan, A4 genişliğinde basit PDF yazıcı */
-function pdfFromJpegs(pages){
+function pdfFromPages(pages){
   const enc=new TextEncoder(), chunks=[], offs=[]; let len=0;
   const push=b=>{ if(typeof b==='string') b=enc.encode(b); chunks.push(b); len+=b.length; };
   const obj=(n,fn)=>{ offs[n]=len; push(n+' 0 obj\n'); fn(); push('\nendobj\n'); };
@@ -431,7 +449,7 @@ function pdfFromJpegs(pages){
     obj(a,()=>push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /Im0 ${a+2} 0 R >> >> /Contents ${a+1} 0 R >>`));
     const cs=`q ${W} 0 0 ${H} 0 0 cm /Im0 Do Q`;
     obj(a+1,()=>push(`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`));
-    obj(a+2,()=>{ push(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`); push(p.jpg); push('\nendstream'); });
+    obj(a+2,()=>{ push(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /${p.filter} /Length ${p.data.length} >>\nstream\n`); push(p.data); push('\nendstream'); });
   });
   const xref=len;
   push(`xref\n0 ${total}\n0000000000 65535 f \n`);
@@ -439,7 +457,6 @@ function pdfFromJpegs(pages){
   push(`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
   return new Blob(chunks,{type:'application/pdf'});
 }
-const jpgBytes=async r=>({jpg:new Uint8Array(await r.blob.arrayBuffer()),w:r.w,h:r.h});
 
 let busy=false;
 async function withBusy(fn){
@@ -451,15 +468,15 @@ async function withBusy(fn){
 }
 function ltSingle(kind){ const s=svc[active]; if(!s) return; return withBusy(async say=>{
   say(kind.toUpperCase()+' hazırlanıyor…');
-  const r=await renderSheet(s);
-  if(kind==='jpg') download(r.blob,fname(s,'jpg'));
-  else download(pdfFromJpegs([await jpgBytes(r)]),fname(s,'pdf'));
+  const cv=await renderSheet(s);
+  if(kind==='jpg') download(await cvJpg(cv),fname(s,'jpg'));
+  else download(pdfFromPages([await cvPage(cv)]),fname(s,'pdf'));
 });}
 function ltZip(){ return withBusy(async say=>{
   const z=new JSZip();
   for(let i=0;i<SVC.length;i++){
     say(`PDF hazırlanıyor… ${i+1}/${SVC.length}`);
-    const pdf=pdfFromJpegs([await jpgBytes(await renderSheet(SVC[i]))]);
+    const pdf=pdfFromPages([await cvPage(await renderSheet(SVC[i]))]);
     z.file(fname(SVC[i],'pdf'),pdf);
   }
   say('ZIP oluşturuluyor…');
@@ -467,8 +484,8 @@ function ltZip(){ return withBusy(async say=>{
 });}
 function ltAllPdf(){ return withBusy(async say=>{
   const pages=[];
-  for(let i=0;i<SVC.length;i++){ say(`PDF hazırlanıyor… ${i+1}/${SVC.length}`); pages.push(await jpgBytes(await renderSheet(SVC[i]))); }
-  download(pdfFromJpegs(pages),`eksik_alim_tum_servisler_${stamp()}.pdf`);
+  for(let i=0;i<SVC.length;i++){ say(`PDF hazırlanıyor… ${i+1}/${SVC.length}`); pages.push(await cvPage(await renderSheet(SVC[i]))); }
+  download(pdfFromPages(pages),`eksik_alim_tum_servisler_${stamp()}.pdf`);
 });}
 
 function tab(which){
