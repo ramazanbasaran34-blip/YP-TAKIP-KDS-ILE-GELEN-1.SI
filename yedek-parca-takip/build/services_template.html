@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light">
+<title>Servis Yedek Parça Takip Sistemi – Servis Girişi</title>
+<style>
+__FONTS__
+:root{--navy:#0b2a5b;--ink:#1b2430;--muted:#5d6b7c;--line:#d5dbe4;--bg:#eef1f6;--card:#fff;--bad:#b3261e;--bad-soft:#fdf1f0;--ok:#1e7e4f;--ok-soft:#e3f5ea;--warn:#8a5a00;--warn-soft:#fff3d9}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.top{background:#fff;border-bottom:4px solid var(--navy);box-shadow:0 1px 0 var(--line)}
+.top .in{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.top img{height:38px;width:auto;display:block;flex:none}
+.top .ttl{flex:1;text-align:center;font-weight:700;color:var(--navy);letter-spacing:.06em;font-size:19px;line-height:1.25}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(11,42,91,.06)}
+.login{max-width:520px;margin:0 auto}
+.login h1{margin:0 0 4px;font-size:19px;color:var(--navy);letter-spacing:.02em}
+.login .lead{margin:0 0 18px;color:var(--muted)}
+.note{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--warn);background:var(--warn-soft);border-left-width:6px;border-radius:8px;padding:12px 14px;margin:0 0 18px;color:#4d3300;font-weight:600;line-height:1.45}
+.note .i{flex:none;width:22px;height:22px;border-radius:50%;background:var(--warn);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px;margin-top:1px}
+label{display:block;font-weight:600;margin:0 0 6px}
+.fld{margin:0 0 16px}
+.pre{display:flex;border:1.5px solid #9aa7b8;border-radius:8px;background:#fff;overflow:hidden}
+.pre:focus-within,input.t:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,42,91,.15);outline:0}
+.pre span{background:#e6ecf5;color:var(--navy);font-weight:700;padding:0 12px;display:grid;place-items:center;letter-spacing:.06em;border-right:1.5px solid #9aa7b8}
+.pre input{border:0;outline:0;flex:1;min-width:0;padding:11px 12px;font:inherit;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:transparent;color:var(--ink)}
+input.t{width:100%;border:1.5px solid #9aa7b8;border-radius:8px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
+.hint{color:var(--muted);font-size:12.5px;margin-top:5px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:8px;background:var(--navy);color:#fff;padding:12px 18px;cursor:pointer;width:100%;font-size:15px}
+.btn:hover{background:#0d3475} .btn:disabled{opacity:.6;cursor:wait}
+.btn.sec{background:#fff;color:var(--navy);border:1.5px solid var(--navy);width:auto}
+.err{display:none;margin:0 0 14px;border:1.5px solid var(--bad);background:var(--bad-soft);color:#6e0f0a;border-radius:8px;padding:10px 12px;font-weight:600}
+.err.show{display:block}
+.res{display:none}
+.res.show{display:block}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.bar h2{margin:0;font-size:18px;color:var(--navy)}
+.bar .sub{color:var(--muted);font-size:13px}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.acts .btn{width:auto;padding:11px 18px}
+.okbox{border:1.5px solid var(--ok);background:var(--ok-soft);color:#14573a;border-radius:8px;padding:14px 16px;font-weight:600}
+.prev{overflow:hidden;background:#dfe4ec;border-radius:10px;padding:12px 0}
+.prev .sc{transform-origin:top left}
+.sheet{background:#fff;color:#111;width:210mm;min-height:297mm;padding:12mm 13mm;margin:0 auto;display:flex;flex-direction:column;font-family:'Inter',system-ui,'Segoe UI',Arial,sans-serif;font-size:13px;line-height:1.4;font-weight:500}
+__SHEETCSS__
+#capture{position:fixed;left:-10000px;top:0}#capture .sheet{box-shadow:none;margin:0}
+.foot{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
+@media (max-width:560px){.top img{height:28px}.top .ttl{font-size:13px;letter-spacing:.03em}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <img src="__LOGO_KURALKAN__" alt="e-Kuralkan">
+  <div class="ttl">SERVİS YEDEK PARÇA TAKİP SİSTEMİ</div>
+  <img src="__LOGO_BAJAJ__" alt="Bajaj">
+</div></header>
+
+<main class="wrap">
+  <section class="card login" id="loginCard">
+    <h1>Servis Girişi</h1>
+    <p class="lead">Cari kodunuzu ve mail adresinizi giriniz.</p>
+    <div class="note"><div class="i">!</div><div>Bu liste, Bajaj servislerinde bulunması zorunlu sarf malzemeleri listesidir.</div></div>
+    <div class="err" id="err" role="alert"></div>
+    <form id="f" autocomplete="off" novalidate>
+      <div class="fld">
+        <label for="cari">Cari Kodu</label>
+        <div class="pre"><span>MY</span><input id="cari" inputmode="numeric" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="14" placeholder="000000" aria-describedby="hc"></div>
+        <div class="hint" id="hc">“MY” otomatik yazılır; kalan rakamları siz giriniz (büyük/küçük harf fark etmez).</div>
+      </div>
+      <div class="fld">
+        <label for="mail">Kuralkan sistemlerinde tanımlı mail adresinizi giriniz</label>
+        <input class="t" id="mail" type="text" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ornek@firma.com">
+      </div>
+      <button class="btn" id="go" type="submit">Giriş Yap</button>
+    </form>
+  </section>
+
+  <section class="res" id="res">
+    <div class="card">
+      <div class="bar">
+        <div><h2 id="rName"></h2><div class="sub" id="rSub"></div></div>
+        <div class="acts"><button class="btn" id="dl" type="button">PDF İndir</button><button class="btn sec" id="out" type="button">Çıkış</button></div>
+      </div>
+      <div class="note" style="margin-bottom:14px"><div class="i">!</div><div>Bu liste, Bajaj servislerinde bulunması zorunlu sarf malzemeleri listesidir.</div></div>
+      <div id="rBody"></div>
+    </div>
+  </section>
+  <div class="foot">Bu ekranda yalnızca kendi servisinize ait güncel liste görüntülenir.</div>
+</main>
+<div id="capture" aria-hidden="true"></div>
+
+<script>__H2C__</script>
+<script>
+const DB = __DB__;
+const LOGO_K='__LOGO_KURALKAN__', LOGO_B='__LOGO_BAJAJ__';
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const enc=new TextEncoder(), dec=new TextDecoder();
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const hex=buf=>[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('');
+let cur=null;   // {ad,il,kod,tarih,parts}
+
+/* ---- kimlik doğrulama: cari kodu + mail ile şifre çözme ---- */
+async function lookupId(cari){ return hex(await crypto.subtle.digest('SHA-256',enc.encode('SYPTS|'+DB.g+'|'+cari))).slice(0,16); }
+async function aesOpen(key,blob){ const b=b64(blob); return crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(0,12)},key,b.slice(12)); }
+async function tryOpen(cari,mail,rec){
+  const km=await crypto.subtle.importKey('raw',enc.encode(cari+'|'+mail),'PBKDF2',false,['deriveKey']);
+  const wk=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(rec.s),iterations:DB.it,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+  for(const w of rec.w){
+    let raw; try{ raw=await aesOpen(wk,w); }catch(e){ continue; }
+    const dk=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);
+    return JSON.parse(dec.decode(await aesOpen(dk,rec.p)));
+  }
+  return null;
+}
+
+/* ---- form ---- */
+const cariEl=$('cari'), mailEl=$('mail'), errEl=$('err');
+function showErr(m){ errEl.textContent=m; errEl.classList.add('show'); }
+function clearErr(){ errEl.classList.remove('show'); }
+cariEl.addEventListener('input',()=>{
+  let v=cariEl.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(v.startsWith('MY')) v=v.slice(2);          // MY yazılmışsa/yapıştırılmışsa tekrarlama
+  cariEl.value=v; clearErr();
+});
+mailEl.addEventListener('input',clearErr);
+$('f').addEventListener('submit',async e=>{
+  e.preventDefault(); clearErr();
+  const rest=cariEl.value.trim(), mail=mailEl.value.trim().normalize('NFC').toLowerCase();
+  if(!rest) return showErr('Lütfen cari kodunuzu giriniz.');
+  if(!/^[^\s@;,]+@[^\s@;,]+\.[^\s@;,]+$/.test(mail)) return showErr('Lütfen Kuralkan sistemlerinde tanımlı geçerli bir mail adresi giriniz.');
+  if(!window.crypto||!crypto.subtle) return showErr('Bu tarayıcı güvenli doğrulamayı desteklemiyor. Lütfen güncel bir tarayıcı (Chrome, Edge, Safari, Firefox) ile https bağlantısını kullanınız.');
+  const cari='MY'+(/^\d{1,5}$/.test(rest)?rest.padStart(6,'0'):rest), btn=$('go'); btn.disabled=true; btn.textContent='Kontrol ediliyor…';
+  try{
+    const rec=DB.u[await lookupId(cari)];
+    if(!rec){ showErr('Girdiğiniz cari kodu bulunamadı. Lütfen cari kodunuzu kontrol ediniz.'); return; }
+    const p=await tryOpen(cari,mail,rec);
+    if(!p){ showErr('Cari kodu ile mail adresi eşleşmiyor. Lütfen Kuralkan sistemlerinde tanımlı mail adresinizi giriniz.'); return; }
+    show(p);
+  }catch(err){ showErr('Doğrulama sırasında bir hata oluştu: '+err.message); }
+  finally{ btn.disabled=false; btn.textContent='Giriş Yap'; }
+});
+
+/* ---- sonuç ekranı ---- */
+function sheetHtml(s){
+  return `<div class="sheet">
+    <div class="hd"><img src="${LOGO_K}" alt="e-Kuralkan"><div class="ttl">SERVİS YEDEK PARÇA<br>TAKİP SİSTEMİ</div><img src="${LOGO_B}" alt="Bajaj"></div>
+    <div class="rule"></div><div class="rule2"></div>
+    <h2>ALIM YAPILMAYAN YEDEK PARÇALAR LİSTESİ</h2>
+    <div class="info">
+      <b>Bayi Adı:</b><span>${esc(s.ad)} <span style="color:#44546a;font-weight:500">(${esc(s.kod)})</span></span>
+      <b>İl:</b><span>${esc(s.il)}</span>
+      <b>Tarih:</b><span>${esc(s.tarih)}</span>
+    </div>
+    <table><thead><tr><th class="n">Sıra</th><th>Stok Kodu</th><th>Stok Adı</th><th>Uyumlu Modeller</th></tr></thead><tbody>
+    ${s.parts.map((p,i)=>`<tr><td class="n">${i+1}</td><td class="kod">${esc(p[0])}</td><td class="ad">${esc(p[1])}</td><td class="mdl">${esc(p[2])}</td></tr>`).join('')}
+    </tbody></table>
+    <div class="msg">Sayın Servisimiz, yukarıdaki yedek parçalardan alım yapmadığınız tespit edilmiştir.</div>
+  </div>`;
+}
+function fit(){
+  const pv=document.querySelector('.prev'); if(!pv) return; const sc=pv.firstElementChild, sh=sc.firstElementChild;
+  sc.style.transform='none'; const w=sh.offsetWidth, k=Math.min(1,(pv.clientWidth-16)/w);
+  sc.style.transform=`scale(${k})`; sc.style.width=w+'px'; pv.style.height=(sh.offsetHeight*k+24)+'px'; sc.style.marginLeft=Math.max(8,(pv.clientWidth-w*k)/2)+'px';
+}
+window.addEventListener('resize',fit);
+function show(p){
+  cur=p;
+  $('rName').textContent=p.ad;
+  $('rSub').textContent=`${p.il} · ${p.kod} · Veri tarihi: ${p.tarih}`;
+  const has=p.parts.length>0;
+  $('dl').style.display=has?'':'none';
+  $('rBody').innerHTML = has
+    ? `<div class="prev"><div class="sc">${sheetHtml(p)}</div></div>`
+    : `<div class="okbox">Güncel veride (${esc(p.tarih)}) alım yapılmayan yedek parçanız görünmemektedir. İndirilecek liste bulunmuyor.</div>`;
+  $('loginCard').style.display='none'; $('res').classList.add('show'); window.scrollTo(0,0); fit();
+}
+$('out').onclick=()=>{ cur=null; $('rBody').innerHTML=''; $('res').classList.remove('show'); $('loginCard').style.display=''; cariEl.value=''; mailEl.value=''; cariEl.focus(); };
+
+/* ---- PDF (Eksik Alım Yapan Servisler menüsündekiyle aynı A4 dikey yazı) ---- */
+__SHAREDJS__
+function fname(s){const m={'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U'};return (s.il+'_'+s.ad+'_'+s.kod).replace(/[çÇğĞıİöÖşŞüÜ]/g,c=>m[c]).replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.-]+/g,'')+'_'+s.tarihIso+'.pdf';}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+$('dl').onclick=async()=>{
+  if(!cur||!cur.parts.length) return; const b=$('dl'), old=b.textContent; b.disabled=true; b.textContent='PDF hazırlanıyor…';
+  try{
+    await Promise.all(['400','500','600','700'].map(w=>document.fonts.load(w+' 13px Inter'))); await document.fonts.ready;
+    const cap=$('capture'); cap.innerHTML=sheetHtml(cur);
+    const cv=await html2canvas(cap.firstElementChild,{scale:2.5,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    cap.innerHTML='';
+    download(pdfFromPages([await cvPage(cv)]),fname(cur));
+  }catch(e){ alert('PDF oluşturulamadı: '+e.message); }
+  finally{ b.disabled=false; b.textContent=old; }
+};
+})();
+</script>
+</body>
+</html>
