@@ -7,11 +7,21 @@ import pandas as pd
 
 root = Path(__file__).resolve().parent.parent
 d = pd.read_excel(root/'kaynak'/'Servis_Performans_Eslesenler_YEDEK_PARCA_ADET.xlsx', header=2).iloc[:-1]  # son satır not satırı
-st = d.drop_duplicates('Stok Kodu')[['Stok Kodu','Stok Adı','Model Listesi']]
-stoklar = [{'kod':a,'ad':b,'model':c} for a,b,c in st.itertuples(index=False)]
+from datetime import datetime
+from zoneinfo import ZoneInfo
+now = datetime.now(ZoneInfo('Europe/Istanbul'))
+mfile = root/'kaynak'/'modeller.json'   # model listesi boş gelen parçalar için yedek
+fb = json.loads(mfile.read_text(encoding='utf-8')) if mfile.exists() else {}
+stoklar = []
+for kod, g in d.groupby('Stok Kodu', sort=False):
+    mv = g['Model Listesi'].dropna()
+    model = mv.iloc[0] if len(mv) else fb.get(kod)
+    assert model, 'model listesi bulunamadi: ' + kod
+    stoklar.append({'kod':kod, 'ad':g['Stok Adı'].iloc[0], 'model':model})
+mfile.write_text(json.dumps({s['kod']:s['model'] for s in stoklar}, ensure_ascii=False, indent=1), encoding='utf-8')
 idx = {s['kod']:i for i,s in enumerate(stoklar)}
 rows = [[r['Cari Kodu'],r['Cari İsim'],r['Şehir'],idx[r['Stok Kodu']],int(r['Adet']),int(r['Bekleyen'])] for _,r in d.iterrows()]
-data = json.dumps({'stoklar':stoklar,'rows':rows}, ensure_ascii=False, separators=(',',':')).replace('</','<\\/')
+data = json.dumps({'stoklar':stoklar,'rows':rows,'tarih':now.strftime('%d.%m.%Y'),'tarihIso':now.strftime('%Y-%m-%d')}, ensure_ascii=False, separators=(',',':')).replace('</','<\\/')
 
 def lib(p): return (root/'node_modules'/p).read_text(encoding='utf-8')
 def b64(f): return 'data:image/jpeg;base64,'+base64.b64encode((root/'assets'/f).read_bytes()).decode()

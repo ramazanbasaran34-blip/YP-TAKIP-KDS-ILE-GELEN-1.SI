@@ -175,7 +175,7 @@ td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
   <header class="top">
     <div>
       <h1>Yedek Parça Eksik Stok Raporu</h1>
-      <div class="sub">Kaynak: Servis Performans Eşleşenler – Yedek Parça Adet · Rapor tarihi: <span id="rtarih"></span></div>
+      <div class="sub">Kaynak: Servis Performans Eşleşenler – Yedek Parça Adet · Veri tarihi: <span id="rtarih"></span></div>
       <div class="sub printonly" id="printFilter"></div>
     </div>
     <div class="menu noprint" id="saveMenu">
@@ -275,7 +275,7 @@ const nf = new Intl.NumberFormat('tr-TR');
 const tr = new Intl.Collator('tr',{numeric:true,sensitivity:'base'});
 const $ = id=>document.getElementById(id);
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const today = new Date().toLocaleDateString('tr-TR');
+const today = DATA.tarih;   // veri tarihi: raporun üretildiği gün
 $('rtarih').textContent = today;
 
 const isEksik = r=>r.adet===0 && r.bek===0;
@@ -361,7 +361,7 @@ document.addEventListener('click',()=>{menu.classList.remove('open');$('saveBtn'
 document.addEventListener('keydown',e=>{if(e.key==='Escape')menu.classList.remove('open');});
 menu.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{menu.classList.remove('open'); ({xlsx:saveXlsx,pdf:savePdf,html:saveHtml,lpdf:()=>ltSingle('pdf'),ljpg:()=>ltSingle('jpg'),lzip:ltZip,lall:ltAllPdf,mxx:mxXlsx,mxp:mxPdf})[b.dataset.fmt]();});
 
-const stamp=()=>new Date().toISOString().slice(0,10);
+const stamp=()=>DATA.tarihIso;
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 function filterText(rows){return [VIEWS[st.view].label, st.stok&&('Stok: '+st.stok), st.sehir&&('Şehir: '+st.sehir), st.q&&('Arama: '+st.q)].filter(Boolean).join(' · ');}
 function stokSummary(rows){return STOK.map((s,i)=>[s.kod,s.ad,rows.filter(r=>r.si===i).length]).filter(x=>x[2]>0);}
@@ -384,7 +384,7 @@ function savePdf(){ return withBusy(async say=>{
   const rows=filtered(), cari=new Set(rows.map(r=>r.cariKod)).size;
   const head='<thead><tr><th>Cari Kodu</th><th>Cari İsim</th><th>Şehir</th><th>Stok Kodu</th><th>Stok Adı</th><th>Adet</th><th>Bekleyen</th><th>Durum</th></tr></thead>';
   const trs=rows.map(r=>`<tr><td>${esc(r.cariKod)}</td><td>${esc(r.cari)}</td><td>${esc(r.sehir)}</td><td>${esc(r.stokKod)}</td><td>${esc(r.stokAd)}</td><td class="n">${nf.format(r.adet)}</td><td class="n">${nf.format(r.bek)}</td><td class="${r.durum==='Eksik'?'yok':''}">${esc(r.durum)}</td></tr>`);
-  await docPdf({title:'EKSİK STOK RAPORU',sub:`Rapor tarihi: ${today} · ${nf.format(rows.length)} satır · ${nf.format(cari)} cari · Görünüm: ${filterText(rows)}`,head,rows:trs,orient:'landscape',file:'yedek_parca_eksik_stok',say});
+  await docPdf({title:'EKSİK STOK RAPORU',sub:`Veri tarihi: ${today} · ${nf.format(rows.length)} satır · ${nf.format(cari)} cari · Görünüm: ${filterText(rows)}`,head,rows:trs,orient:'landscape',file:'yedek_parca_eksik_stok',say});
 });}
 function saveHtml(){
   const rows=filtered(), cari=new Set(rows.map(r=>r.cariKod)).size;
@@ -395,7 +395,7 @@ body{font:14px/1.45 system-ui,Segoe UI,Roboto,sans-serif;margin:24px;color:#1b24
 table{border-collapse:collapse;width:100%;margin-bottom:24px}th,td{border-bottom:1px solid #e1e5ea;padding:6px 9px;text-align:left}th{background:#f1f3f6;font-size:12px}.n{text-align:right}
 .k{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}.k div{border:1px solid #e1e5ea;border-radius:8px;padding:10px 14px}.k b{display:block;font-size:22px}
 @media print{@page{size:A4 landscape;margin:10mm}body{margin:0;font-size:10.5px}tr{break-inside:avoid}}</style></head><body>
-<h1>Yedek Parça Eksik Stok Raporu</h1><div class="s">Rapor tarihi: ${today} · ${esc(filterText(rows))}</div>
+<h1>Yedek Parça Eksik Stok Raporu</h1><div class="s">Veri tarihi: ${today} · ${esc(filterText(rows))}</div>
 <div class="k"><div><b>${nf.format(rows.length)}</b>Satır</div><div><b>${nf.format(cari)}</b>Cari</div></div>
 <h2 style="font-size:15px">Stok koduna göre özet</h2><table><thead><tr><th>Stok Kodu</th><th>Stok Adı</th><th class="n">Satır</th></tr></thead><tbody>${ss}</tbody></table>
 <h2 style="font-size:15px">Liste</h2><table><thead><tr><th>Cari Kodu</th><th>Cari İsim</th><th>Şehir</th><th>Stok Kodu</th><th>Stok Adı</th><th class="n">Adet</th><th class="n">Bekleyen</th><th>Durum</th></tr></thead><tbody>${tr_}</tbody></table></body></html>`;
@@ -547,7 +547,7 @@ async function docPdf({title,sub,head,rows,orient,file,say}){
   cap.innerHTML='';
   download(pdfFromPages(out,land?841.89:595.28),`${file}_${stamp()}.pdf`);
 }
-const subLine=(n,extra)=>`Rapor tarihi: ${today} · ${n} servis${extra?' · '+extra:''}`;
+const subLine=(n,extra)=>`Veri tarihi: ${today} · ${n} servis${extra?' · '+extra:''}`;
 
 /* ---- Eksik Parçası Olan Servis Tablosu (matris) ---- */
 const CELL={}; ROWS.forEach(r=>{(CELL[r.cariKod] ||= [])[r.si]=r.durum;});
